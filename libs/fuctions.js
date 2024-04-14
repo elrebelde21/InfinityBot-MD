@@ -525,7 +525,7 @@ if (!('antitoxic' in chats)) chats.antitoxic = false
 if (!('autosticker' in chats)) chats.autosticker = false
 if (!('detect' in chats)) chats.detect = true
 if (!('autoread' in chats)) chats.autoread = true
-if (!('autolevelup' in chats)) chats.autolevelup = true
+if (!('autolevelup' in chats)) chats.autolevelup = false
 if (!('viewonce' in chats)) chats.viewonce = true 
 if (!('game2' in chats)) chats.game2 = true 
 if (!('rules' in chats)) chats.rules = ''
@@ -550,7 +550,7 @@ antitoxic: false,
 autosticker: false, 
 detect: true, 
 autoread: false, 
-autolevelup: true, 
+autolevelup: false, 
 viewonce: true, 
 game2: true, 
 rules: ''
