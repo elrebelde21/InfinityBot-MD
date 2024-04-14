@@ -504,7 +504,7 @@ trash: 0,
 let chats = global.db.data.chats[m.chat]  
 if (typeof chats !== 'object') global.db.data.chats[m.chat] = {}  
 if (chats) {  
-if (!('antilink' in chats)) chats.antilink = false  
+if (!('antilink' in chats)) chats.antilink = true
 if (!('antiLink2' in chats)) chats.antiLink2 = false
 if (!('AntiTwitter' in chats)) chats.AntiTwitter = false
 if (!('AntiTiktok' in chats)) chats.AntiTiktok = false
@@ -530,7 +530,7 @@ if (!('viewonce' in chats)) chats.viewonce = true
 if (!('game2' in chats)) chats.game2 = true 
 if (!('rules' in chats)) chats.rules = ''
 } else global.db.data.chats[m.chat] = {  
-antilink: false,  
+antilink: true,  
 antiLink2: false, 
 AntiTwitter: false, 
 AntiTiktok: false, 
