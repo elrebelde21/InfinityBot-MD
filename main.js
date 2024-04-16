@@ -177,9 +177,9 @@ conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}}}
 if (!m.isGroup && !isCreator) {  
 //const bot = global.db.data.users[m.sender] || {};
 if (global.db.data.settings[numBot].antiprivado) {
-conn.sendMessage(m.chat, {text: `*${lenguaje['smsWel']()}* @${sender.split`@`[0]}, ${lenguaje['smsAntiPv']()}\n${nn2}`, mentions: [m.sender], }, {quoted: m}) 
+/*conn.sendMessage(m.chat, {text: `*${lenguaje['smsWel']()}* @${sender.split`@`[0]}, ${lenguaje['smsAntiPv']()}\n${nn2}`, mentions: [m.sender], }, {quoted: m}) 
 await delay(2 * 2000) 
-await conn.updateBlockStatus(m.chat, 'block')   
+await conn.updateBlockStatus(m.chat, 'block')*/
 return 
 }}
 
