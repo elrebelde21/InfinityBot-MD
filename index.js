@@ -94,7 +94,9 @@ if (opts['autocleartmp'] && (global.support || {}).find) (tmp = [os.tmpdir(), 't
 }}
 setInterval(async () => {
 await clearTmp()
-console.log(`🟢 𝐒𝐄 𝐋𝐈𝐌𝐏𝐈𝐎 𝐋𝐀 𝐂𝐀𝐑𝐏𝐄𝐓𝐀 𝐓𝐌𝐏 𝐂𝐎𝐍 𝐄́𝐗𝐈𝐓𝐎`)}, 180000)
+console.log(`╔═════════════════════════════════╗
+║ 🟢 𝐒𝐄 𝐋𝐈𝐌𝐏𝐈𝐎 𝐋𝐀 𝐂𝐀𝐑𝐏𝐄𝐓𝐀 𝐓𝐌𝐏 𝐂𝐎𝐍 𝐄́𝐗𝐈𝐓𝐎║
+╚═════════════════════════════════╝`)}, 180000)
 //_________________
 
 //configuración 
@@ -468,7 +470,7 @@ _*💢Te ofrecemos un hosting de calidad, a un precio accesible, barato, todos p
 #pagos
 
 *❇️Contactar con staff usando el siguiente comando :*
-#solictud (Pronto alguien de staff se comunidad rápido con usted) 
+#solicitud (Pronto alguien de staff se comunidad rápido con usted) 
 #staff`, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 } else if (anu.action == 'remove') {
 const buffer = await getBuffer(ppuser)
@@ -541,7 +543,9 @@ console.log(chalk.gray('iniciando | starting...'));
 } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
 console.log(color('[SYS]', '#009FFF'),
 color(moment().format('DD/MM/YY HH:mm:ss'), '#A1FFCE'),
-color(`⚠️ 𝘊𝘖𝘕𝘌𝘟𝘐𝘖𝘕 𝘊𝘌𝘙𝘙𝘈𝘋𝘈...`, '#f64f59'));
+color(`\n╔════════════════════╗
+║ ⚠️ 𝘊𝘖𝘕𝘌𝘟𝘐𝘖𝘕 𝘊𝘌𝘙𝘙𝘈𝘋𝘈...   ║
+╚════════════════════╝\n`, '#f64f59'));
 startBot()
 } else if (opcion == '1' || methodCodeQR && qr !== undefined) {
 if (opcion == '1' || methodCodeQR) {
@@ -554,7 +558,9 @@ console.log(color(` `,'magenta'))
 console.log(color(`\n𝘜𝘚𝘜𝘈𝘙𝘐𝘖 𝘊𝘖𝘕𝘌𝘊𝘛𝘈𝘕𝘋𝘖 :` + JSON.stringify(sock.user, null, 2), 'yellow'))
 console.log(color('[SYS]', '#009FFF'),
 color(moment().format('DD/MM/YY HH:mm:ss'), '#A1FFCE'),
-color(`\n🟢 CONECTANDO CON ÉXITO\n` + receivedPendingNotifications, '#38ef7d')
+color(`\n╔══════════════════════╗
+║ 🟢 CONECTANDO CON ÉXITO   ║
+╚══════════════════════╝\n` + receivedPendingNotifications, '#38ef7d')
 );
 }});
 

@@ -31,9 +31,17 @@ const { File } = require("megajs")
 const speed = require("performance-now")
 const ffmpeg = require("fluent-ffmpeg")
 const similarity = require('similarity')   
+const ytdl = require('ytdl-core') 
+const fg = require('api-dylux') 
+const {savefrom, lyrics, lyricsv2, youtubedl, youtubedlv2} = require('@bochilteam/scraper') 
 const translate = require('@vitalets/google-translate-api') 
 const { smsg, fetchBuffer, getBuffer, buffergif, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom, msToTime, downloadMediaMessage, convertirMsADiasHorasMinutosSegundos, pickRandom, getUserBio, asyncgetUserProfilePic} = require('./libs/fuctions')
 const { ytmp4, ytmp3, ytplay, ytplayvid } = require('./libs/youtube')
+
+const {sizeFormatter} = require('human-readable') 
+const formatSize = sizeFormatter({
+  std: 'JEDEC', decimalPlaces: 2, keepTrailingZeroes: false, render: (literal, symbol) => `${literal} ${symbol}B`});
+  
 const color = (text, color) => { // Función 'color' que toma un texto y un color como parámetros
 return !color ? chalk.cyanBright(text) : color.startsWith('#') ? chalk.hex(color)(text) : chalk.keyword(color)(text)} // Si no hay color, utilizar el color celeste brillante (por defecto)
 
@@ -173,15 +181,16 @@ if (m.sender.startsWith(prefix)) {
 m.reply(`${lenguaje['smsAntiArabe']()}`, m.sender)
 conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}}} 
 
-//---------------------[ ANTIPRIVADO ]------------------------
-if (!m.isGroup && !isCreator) {  
-//const bot = global.db.data.users[m.sender] || {};
-if (global.db.data.settings[numBot].antiprivado) {
+//---------------------[ ANTIPRIVADO ]-----------------------
+if (msg.text.toLowerCase().includes('staff') || msg.text.toLowerCase().includes('ayudar') || msg.text.toLowerCase().includes('estado') || msg.text.toLowerCase().includes('owner') || msg.text.toLowerCase().includes('infohost') || msg.text.toLowerCase().includes('grupos')) {
+} else if (!m.isGroup && !isCreator) {
+  return;
+}
 /*conn.sendMessage(m.chat, {text: `*${lenguaje['smsWel']()}* @${sender.split`@`[0]}, ${lenguaje['smsAntiPv']()}\n${nn2}`, mentions: [m.sender], }, {quoted: m}) 
 await delay(2 * 2000) 
 await conn.updateBlockStatus(m.chat, 'block')*/
-return 
-}}
+//return 
+//}}}
 
 //--------------------[ viewOnceMessage ]-----------------------
 if (m.mtype == 'viewOnceMessageV2') { 
@@ -456,7 +465,7 @@ let res = await gpt.json()
 await m.reply(res.result)}
 break
 
-case 'welcome': case 'antilink': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antiprivado': case 'anticall': case 'antilink2': case 'antitwiter':case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'AntiFacebook': case 'antifacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'antiviewonce': case 'antitoxic': case 'autodetect': case 'detect': { 
+case 'welcome': case 'antilink': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antilink2': case 'antitwiter':case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'AntiFacebook': case 'antifacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'antiviewonce': case 'antitoxic': case 'autodetect': case 'detect': { 
 if (!m.isGroup) return m.reply(info.group)
 if (!isBotAdmins) return m.reply(info.botAdmin)
 if (!isGroupAdmins) return m.reply(info.admin)
@@ -581,10 +590,13 @@ global.db.data.chats[m.chat].detect = true
 m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].detect = false
-m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
+m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}}
+break
 
-if (/antiprivado/.test(command)) {
+case 'antiprivado': case 'anticall': {
 if (!isCreator) return m.reply(info.owner)
+if (!text) return m.reply(`⚠️ 𝐀𝐂𝐂𝐈𝐎́𝐍 𝐌𝐀𝐋 𝐔𝐒𝐀𝐃𝐀\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*`)
+if (/antiprivado/.test(command)) {
 if (args[0] === "on") {
 global.db.data.settings[numBot].antiprivado = true
 m.reply(`❬ 🚩 ❭ La funcion ${command} esta habilitada en este grupo *${command}*`)
@@ -593,7 +605,6 @@ global.db.data.settings[numBot].antiprivado = false
 m.reply(`❬ 🚩 ❭ La funcion ${command} esta deshabilitada en este grupo`)}}
 
 if (/anticall/.test(command)) {
-if (!isCreator) return m.reply(info.owner)
 if (args[0] === "on") {
 global.db.data.settings[numBot].anticall = true
 m.reply(`❬ 🚩 ❭ La funcion ${command} esta habilitada en este grupo *${command}*`)
@@ -825,20 +836,56 @@ await fs.unlinkSync(pl.path)}
 break
 
 case 'play2': {
-if (!text) return conn.sendMessage(from, { text: `*🚩 Ingrese el nombre del algunas cancion*` }, { quoted: msg })
 let yts = require("youtube-yts")
-let search = await yts(text)
-let anup3k = search.videos[0]
-let anu = search.videos[Math.floor(Math.random() * search.videos.length)]
-eek = await getBuffer(anu.thumbnail)
-conn.sendMessage(from, { image : eek, caption:  `↻ ◁ II ▷ ↺
-${anu.title}
-
-ᴠᴏʟᴜᴍᴇ : ▮▮▮▮▮▮▯▯▯` }, { quoted: m})
-const playmp3 = require('./libs/ytdl2')
-const pl= await playmp3.mp3(anup3k.url)
-await conn.sendMessage(from, {video: {url : fs.readFileSync(pl.path)}, caption: `${anu.title}` }, {quoted:m})
-await fs.unlinkSync(pl.path)}
+if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
+m.react(rwait) 
+let vid = (await yts(text)).all[0]
+const yt_play = await search(args.join(" "))
+let { title, description, url, thumbnail, videoId, timestamp, views, published } = vid
+//let message = await 
+conn.sendMessage(from, { image : thumbnail, caption:  ` *⌜Cancion Encontrada ✅⌟*\n◉ *Título:* ${yt_play[0].title}\n◉ *Duración:* ${secondString(yt_play[0].duration.seconds)}\n◉ *Publicado:*  ${yt_play[0].ago}\n\n*ESPERE ENVIANDO SU ARCHIVO MP3 ⚠*` }, { quoted: m}) 
+try { 
+const qu = '360';
+const q = qu + 'p';
+const v = yt_play[0].url;
+const yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v));
+const dl_url = await yt.video[q].download();
+const ttl = await yt.title;
+const size = await yt.video[q].fileSizeH;
+await await conn.sendMessage(m.chat, {video: {url: dl_url}, fileName: `${ttl}.mp4`, mimetype: 'video/mp4', caption: `${lenguaje.descargar.text4}\n🔰 ${lenguaje.descargar.title} ${ttl}`, thumbnail: await fetch(yt.thumbnail)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
+m.react(done) 
+} catch {
+try {
+let chat = global.db.data.chats[m.chat]
+let res = await yts(text)
+//let vid = res.all.find(video => video.seconds < 3600)
+let vid = res.videos[0]
+if (!vid) return `⚠️ Vídeo no encontrado`
+let isVideo = /vid$/.test(command)
+let q = isVideo ? '360p' : '128kbps' 
+let yt = await (isVideo ? fg.ytv : fg.yta)(vid.url, q)
+let { title, dl_url, quality, size, sizeB } = yt
+let isLimit = limit * 1024 < sizeB 
+if (!isLimit) conn.sendMessage(m.chat, { video: { url: dl_url }, mimetype: 'video/mp4', asDocument: chat.useDocument }, { quoted: m})
+m.react(done)
+} catch {
+try {
+const mediaa = await ytMp4(yt_play[0].url);
+await await conn.sendMessage(m.chat, {video: {url: dl_url}, caption: wm, mimetype: 'video/mp4', fileName: ttl + `.mp4`}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
+} catch {
+try {
+const lolhuman = await fetch(`https://api.lolhuman.xyz/api/ytvideo2?apikey=${lolkeysapi}&url=${yt_play[0].url}`);
+const lolh = await lolhuman.json();
+const n = lolh.result.title || 'error';
+const n2 = lolh.result.link;
+const n3 = lolh.result.size;
+const n4 = lolh.result.thumbnail;
+await conn.sendMessage(m.chat, {video: {url: n2}, fileName: `${n}.mp4`, mimetype: 'video/mp4', caption: `${lenguaje.descargar.text4}\n🔰 ${lenguaje.descargar.title} ${n}`, thumbnail: await fetch(n4)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
+m.react(done) 
+} catch (e) {
+m.react(error) 
+return m.reply(info.error) 
+console.log(e)}}}}}
 break
 
 case 'play3': case 'playdoc': case 'ytmp3doc': { 
@@ -1087,9 +1134,27 @@ conn.sendMessage(from, { text: `┏━━『 V E R I F I C A C I O N 』━•
 break            
 
 case 's': case 'sticker': {
+const d = new Date(new Date + 3600000);
+const locale = 'es-ES';
+const dias = d.toLocaleDateString(locale, {weekday: 'long'});
+const fecha = d.toLocaleDateString(locale, {day: '2-digit', month: '2-digit', year: 'numeric'});
+let sticker = `┏• ${packname}
+┃
+┃ 🟢 ᴀᴜᴛᴏʀ: 
+┃ 🗓️ ғᴇᴄʜᴀ: 
+┃ 📅 ᴅɪᴀ:
+┃ 👑 ᴏᴡɴᴇʀ:
+┗━━━━━━━━•`
+let sticker2 = ` ┏• ${vs}
+ ┃
+ ┃ 🟢 ${pushname}
+ ┃ 🗓️ ${fecha}
+ ┃ 📅 ${dias}
+ ┃ 👑 By: elrebelde21
+ ┗━━━━━━━━•`
 if (/image/.test(mime)) {  
 media = await quoted.download()  
-let encmedia = await conn.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author, contextInfo: {forwardedNewsletterMessageInfo: { 
+let encmedia = await conn.sendImageAsSticker(m.chat, media, m, { packname: sticker, author: sticker2, contextInfo: {forwardedNewsletterMessageInfo: { 
 newsletterJid: '120363160031023229@newsletter', 
 serverMessageId: '', 
 newsletterName: 'INFINITY-WA 💫' }, 
@@ -1099,7 +1164,7 @@ await fs.unlinkSync(encmedia)
 } else if (/video/.test(mime)) {  
 if ((quoted.msg || quoted).seconds > 20) return m. reply(lenguaje.sticker.text1)  
 media = await quoted.download()  
-let encmedia = await conn.sendVideoAsSticker(m.chat, media, m, { packname: global.packname, author: global.author, contextInfo: { forwardedNewsletterMessageInfo: { 
+let encmedia = await conn.sendVideoAsSticker(m.chat, media, m, { packname: sticker, author: sticker2, contextInfo: { forwardedNewsletterMessageInfo: { 
 newsletterJid: '120363160031023229@newsletter', 
 serverMessageId: '', 
 newsletterName: 'INFINITY-WA 💫' }, 
@@ -1236,7 +1301,7 @@ reply(m.chat, `*Adios fue un gusto esta aqui hasta pronto*`)
 await conn.groupLeave(m.chat)}
 break
 
-if (command == 'backup' || command == 'respaldo' || command == 'copia') {
+case 'backup': case 'respaldo': case 'copia': {
 try {
 let d = new Date
 let date = d.toLocaleDateString('fr', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -1302,9 +1367,19 @@ menu = `Hola @${me.split('@')[0]} mi nombre es ${global.botname}
 • *Usuario reg :* ${rtotalreg}
 • *Usuarios totales:* ${totalreg}
 
+*𝘈𝘊𝘛𝘐𝘝𝘈𝘙 𝘛𝘜 𝘉𝘖𝘛 24/7 𝘈𝘊𝘛𝘐𝘝𝘖 𝘌𝘕 𝘐𝘕𝘍𝘐𝘕𝘐𝘛𝘠-𝘏𝘖𝘚𝘛:*
+${dash}
+
+════════════════════
+*𝘉𝘖𝘛 𝘚𝘐𝘔𝘗𝘓𝘌 𝘊𝘖𝘕 𝘗𝘖𝘊𝘖𝘚 𝘊𝘖𝘔𝘈𝘕𝘋𝘖*
+════════════════════
+
 |- *_-¿PREGUNTA / DUDAS?-_*
 • ${prefix}report
 • ${prefix}creador
+• ${prefix}staff
+• ${prefix}solicitud
+• ${prefix}ayudar
 • ${prefix}precios
 • ${prefix}pagos
 
@@ -1474,7 +1549,7 @@ reply(`*✅ Sus reportes fueron enviados a los moderadores del host, tan pronto 
 break 
 
 case 'owner': case 'creator': case 'creador': case 'staff': {
-conn.sendTextWithMentions(m.chat, `👑 𝐌𝐈 𝐂𝐑𝐄𝐀𝐃𝐎𝐑 𝐄𝐒: @447700168473
+conn.sendTextWithMentions(m.chat, `👑 𝐌𝐈 𝐂𝐑𝐄𝐀𝐃𝐎𝐑 𝐄𝐒: wa.me/message/FETBF7YBO37CG1
 
 🚩 𝐒𝐓𝐀𝐅𝐅 𝐃𝐄𝐋 𝐇𝐎𝐒𝐓𝐈𝐍𝐆: 
 • @527294888993
@@ -1504,7 +1579,7 @@ const listAdmin = groupAdmins.map((v, i) => `${i + 1}. @${v.id.split('@')[0]}`).
 const owner = groupMetadata.owner || groupAdmins.find((p) => p.admin === 'superadmin')?.id || m.chat.split`-`[0] + '@s.whatsapp.net';
 const pesan = args.join` `;
 const oi = `${lenguaje.grupos.text21} ${pesan}`;
-const text = `═✪〘 *ＩＮＶＯＣＡＮＤＯ ＡＤＭＩＮＳ* 〙✪═\n\n• *ɢʀᴜᴘᴏ:* [ ${groupMetadata.subject} ]\n\n• ${oi}\n\n• *ᴀᴅᴍɪɴs:*\n➥ ${listAdmin}\n\n${lenguaje.grupos.text22}`.trim(); 
+const text = `═✪〘 *ＩＮＶＯＣＡＮＤＯ ＡＤＭＩＮＳ* 〙✪═\n\n[ ${groupMetadata.subject} ]\n\n• ${oi}\n\n• *ᴀᴅᴍɪɴs:*\n➥ ${listAdmin}\n\n${lenguaje.grupos.text22}`.trim(); 
 conn.sendMessage(m.chat, { text: text, mentions: participants.map(a => a.id) }, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 break
          
@@ -1592,6 +1667,49 @@ for (let i = 0; i < result.length; i++) { url.push(result[i].url) }
 let random = url[0];
 let getVideo = await ytMp4(random);
 resolve(getVideo)}).catch(reject)})};
+
+async function GDriveDl(url) {
+  let id;
+  if (!(url && url.match(/drive\.google/i))) throw 'Invalid URL';
+  id = (url.match(/\/?id=(.+)/i) || url.match(/\/d\/(.*?)\//))[1];
+  if (!id) throw 'ID Not Found';
+  const res = await fetch(`https://drive.google.com/uc?id=${id}&authuser=0&export=download`, {
+    method: 'post',
+    headers: {
+      'accept-encoding': 'gzip, deflate, br',
+      'content-length': 0,
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      'origin': 'https://drive.google.com',
+      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
+      'x-client-data': 'CKG1yQEIkbbJAQiitskBCMS2yQEIqZ3KAQioo8oBGLeYygE=',
+      'x-drive-first-party': 'DriveWebUi',
+      'x-json-requested': 'true'}});
+  const {fileName, sizeBytes, downloadUrl} = JSON.parse((await res.text()).slice(4));
+  if (!downloadUrl) throw 'Link Download Limit!';
+  const data = await fetch(downloadUrl);
+  if (data.status !== 200) throw data.statusText;
+  return {downloadUrl, fileName, fileSize: formatSize(sizeBytes), mimetype: data.headers.get('content-type')};
+}
+
+async function ttimg(link) {
+    try {    
+        let url = `https://dlpanda.com/es?url=${link}&token=G7eRpMaa`;    
+        let response = await axios.get(url);
+        const html = response.data;
+        const $ = cheerio.load(html);
+        let imgSrc = [];
+        $('div.col-md-12 > img').each((index, element) => {
+            imgSrc.push($(element).attr('src'));
+        });
+        if (imgSrc.length === 0) {
+            return { data: '*[ ⚠️ ] No se encontraron imágenes en el enlace proporcionado.*' };
+        }
+        return { data: imgSrc }; 
+    } catch (error) {
+        console.lo (error);
+        return { data: '*[ ⚠️ ] No se obtuvo respuesta de la página, intente más tarde.*'};
+    };
+};
          
 default:
 /*if (budy.startsWith(`dash`)) {
