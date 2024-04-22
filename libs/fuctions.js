@@ -403,6 +403,7 @@ if (!isNumber(user.afkTime)) user.afkTime = -1
 if (!isNumber(user.joincount)) user.joincount = 1;
 if (!('afkReason' in user)) user.afkReason = ''  
 if (!('banned' in user)) user.banned = false
+if (!('isMuted' in user)) user.isMuted = false
 if (!isNumber(user.limit)) user.limit = 20  
 if (!isNumber(user.banco)) user.banco = 0
 if (!user.premiumTime)  user.premiumTime = 0
