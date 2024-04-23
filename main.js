@@ -463,7 +463,7 @@ var servers = resi.data
 
 let infinyS = servers.attributes
 
-let ii = await fetch('https://live.panel-infinitywa.store/api/client/servers/' + infinyS.uuid.split`-`[0] + "/resources", {
+let ii = await fetch('https://live.panel-infinitywa.store/api/client/servers/' + infinyS.uuid.split`-`[0], {
 "method": "GET",
 "headers": {
 "Accept": "application/json",
@@ -477,10 +477,10 @@ let status = datai.attributes ? datai.attributes.current_state: infinyS.status
 
 let msg = `Servidores
 
-Nombre: ${infinyS.name}\n
-Estado: ${status}\n\n
-Enlace: ${resi.meta.pagination.current_page}/${resi.meta.pagination.total_pages}\n
-Servidores: ${resi.meta.pagination.count}`
+Nombre: ${infinyS.name}\n`
+//Estado: ${status}\n\n
+//Enlace: ${resi.meta.pagination.current_page}/${resi.meta.pagination.total_pages}\n
+//Servidores: ${resi.meta.pagination.count}`
 
 await conn.sendMessage(m.chat, { text: msg }, { quoted: m })
 }
