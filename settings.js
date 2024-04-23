@@ -91,8 +91,8 @@ global.yt = 'https://www.youtube.com/@elrebelde.21'
 global.fb = 'https://www.facebook.com/elrebelde21'
 global.faceb =  'https://www.facebook.com/groups/872989990425789/'
 global.paypal = 'https://paypal.me/OfcGB' 
-global.panel = 'https://host.panel-infinitywa.store'
-global.host = 'https://chat.whatsapp.com/GQ82mPnSYnm0XL2hLPk7FV' //Infinity-host
+global.panel = 'https://live.panel-infinitywa.store'
+global.host = 'https://dashboard.infinitywa.xyz' //Infinity-host 
 global.nna = 'https://whatsapp.com/channel/0029Va4QjH7DeON0ePwzjS1A'
 global.nn = 'https://chat.whatsapp.com/GQ82mPnSYnm0XL2hLPk7FV'
 
