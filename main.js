@@ -461,8 +461,7 @@ let i = await fetch('https://live.panel-infinitywa.store/api/application/servers
 let resi = await i.json()
 var servers = resi.data
 
-for (let server of servers) {
-let infinyS = server.attributes
+let infinyS = servers.attributes
 
 let ii = await fetch('https://live.panel-infinitywa.store/api/client/servers/' + infinyS.uuid.split`-`[0] + "/resources", {
 "method": "GET",
@@ -480,7 +479,6 @@ let status = datai.attributes ? datai.attributes.current_state: infinyS.status
 
 msg += `Nombre: ${infinyS.name}\n`
 msg += `Estado: ${status}\n\n`
-}
 
 msg += `Enlace: ${resi.meta.pagination.current_page}/${res.meta.pagination.total_pages}\n`
 msg += `Servidores: ${resi.meta.pagination.count}`
