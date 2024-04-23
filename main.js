@@ -450,7 +450,7 @@ break
 
 case 'test': {
 if (!text) return conn.sendMessage(m.chat, {text: 'Nombre de Usuario' }, {quoted: m})
-let i = await fetch(`https://live.panel-infinitywa.store/api/application/servers?page=${text}`, {
+let i = await fetch(`https://live.panel-infinitywa.store/api/application/servers?page=` + ${text}, {
 'method': 'GET',
 'headers': {
 'Accept': 'application/json',
@@ -461,9 +461,9 @@ let i = await fetch(`https://live.panel-infinitywa.store/api/application/servers
 let resi = await i.json()
 var servers = resi.data
 
-let infinyS = servers.attributes
+let infinyS = resi.attributes
 
-let ii = await fetch(`https://live.panel-infinitywa.store/api/client/servers/` + infinyS.uuid, {
+let ii = await fetch(`https://live.panel-infinitywa.store/api/client/servers/` + infinyS.uuid.split`-`[0], {
 "method": "GET",
 "headers": {
 "Accept": "application/json",
@@ -484,7 +484,7 @@ Nombre: ${infinyS.name}\n`
 
 await conn.sendMessage(m.chat, { text: msg }, { quoted: m })
 }
-break
+break	
 
 case 'ia': case 'chatgpt':
 if (!text) return conn.sendMessage(from, { text: `*INGRESE EL TEXTO DE LOS QUE QUIERE BUSCAR?*` }, { quoted: msg })
