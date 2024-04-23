@@ -459,7 +459,7 @@ let i = await fetch('https://live.panel-infinitywa.store/api/application/servers
 }
 })
 let resi = await i.json()
-let servers = resi.data
+var servers = resi.data
 
 for (let server of servers) {
 let infinyS = server.attributes
