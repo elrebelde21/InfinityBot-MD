@@ -278,7 +278,7 @@ text26: `*⚡ ¿Esta buscando un hots de calidad y al ajuste de su bolsillo?*
 🧑‍💻 *Contacto (Diego Flores)*
 _(Dudas UNICAMENTE SOBRE EL HOST)_
 • https://wa.me/50497150165`, 
-text27: (nna, host, paypal, fb) => `*\`💫 Te presentamos un nuevo hosting: "Infinity-Wa Host"\`*
+text27: (nna, host, dash, paypal, fb) => `*\`💫 Te presentamos un nuevo hosting: "Infinity-Wa Host"\`*
 
 *¿Muy lento tu nokia y necesitas tener activo tu bot 24/7?*
 
@@ -293,8 +293,11 @@ text27: (nna, host, paypal, fb) => `*\`💫 Te presentamos un nuevo hosting: "In
 
 🟢 \`\`\`Información del Host\`\`\`
 
-💻 *Página:*
-https://host.panel-infinitywa.store
+*🟢 Dashboard:*
+${dash}
+
+💻 *Panel:*
+${host}
 
 🧡 *Canal de WhatsApp:*
 ${nna}
