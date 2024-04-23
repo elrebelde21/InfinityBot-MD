@@ -448,7 +448,7 @@ console.log(e)
 }}}
 break
 
-case 'test':
+case 'test': {
 if (!text) return conn.sendMessage(m.chat, {text: 'Nombre de Usuario' }, {quoted: m})
 let i = await fetch('https://live.panel-infinitywa.store/api/application/servers?page=${text}', {
 'method': 'GET',
@@ -472,18 +472,18 @@ let ii = await fetch('https://live.panel-infinitywa.store/api/client/servers/' +
 }
 })
 
-let msg = 'Servidores'
-
 let datai = await ii.json()
 let status = datai.attributes ? datai.attributes.current_state: infinyS.status
 
-msg += `Nombre: ${infinyS.name}\n`
-msg += `Estado: ${status}\n\n`
+let msg = `Servidores
 
-msg += `Enlace: ${resi.meta.pagination.current_page}/${res.meta.pagination.total_pages}\n`
-msg += `Servidores: ${resi.meta.pagination.count}`
+Nombre: ${infinyS.name}\n
+Estado: ${status}\n\n
+Enlace: ${resi.meta.pagination.current_page}/${resi.meta.pagination.total_pages}\n
+Servidores: ${resi.meta.pagination.count}`
 
 await conn.sendMessage(m.chat, { text: msg }, { quoted: m })
+}
 break
 
 case 'ia': case 'chatgpt':
