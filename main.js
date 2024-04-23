@@ -469,7 +469,7 @@ let ii = await fetch(`https://live.panel-infinitywa.store/api/client/servers/` +
 "headers": {
 "Accept": "application/json",
 "Content-Type": "application/json",
-"Authorization": "Bearer " + mario
+"Authorization": "Bearer ptla_JFMHNKKEmwKPs7naHodiO2eH5MU50KXJbUgJUPmphZb"
 }
 })
 
