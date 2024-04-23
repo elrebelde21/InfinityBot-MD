@@ -448,6 +448,46 @@ console.log(e)
 }}}
 break
 
+case 'test':
+if (!text) return conn.sendMessage(m.chat, {text: 'Nombre de Usuario' }, {quoted: m})
+let i = await fetch('https://live.panel-infinitywa.store/api/application/servers?page=${text}', {
+'method': 'GET',
+'headers': {
+'Accept': 'application/json',
+'Content-Type': 'application/json',
+'Authorization': 'Bearer ' + mario
+}
+})
+let res = await i.json()
+let servers = res.data
+
+for (let server of servers) {
+let infinyS = server.attributes
+
+let ii = await fetch('https://live.panel-infinitywa.store/api/client/servers/' + infinyS.uuid.split`-`[0] + "/resources", {
+"method": "GET",
+"headers": {
+"Accept": "application/json",
+"Content-Type": "application/json",
+"Authorization": "Bearer " + mario
+}
+})
+
+let msg = 'Servidores'
+
+let data = await ii.json()
+let status = data.attributes ? data.attributes.current_state: infinyS.status
+
+msg += `Nombre: ${infinyS.name}\n`
+msg += `Estado: ${status}\n\n`
+}
+
+msg += `Enlace: ${res.meta.pagination.current_page}/${res.meta.pagination.total_pages}\n`
+msg += `Servidores: ${res.meta.pagination.count}`
+
+await conn.sendMessage(m.chat, { text: msg }, { quoted: m })
+break
+
 case 'ia': case 'chatgpt':
 if (!text) return conn.sendMessage(from, { text: `*INGRESE EL TEXTO DE LOS QUE QUIERE BUSCAR?*` }, { quoted: msg })
 await conn.sendPresenceUpdate('composing', m.chat)
