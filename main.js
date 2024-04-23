@@ -458,8 +458,8 @@ let i = await fetch('https://live.panel-infinitywa.store/api/application/servers
 'Authorization': 'Bearer ' + mario
 }
 })
-let res = await i.json()
-let servers = res.data
+let resi = await i.json()
+let servers = resi.data
 
 for (let server of servers) {
 let infinyS = server.attributes
@@ -475,15 +475,15 @@ let ii = await fetch('https://live.panel-infinitywa.store/api/client/servers/' +
 
 let msg = 'Servidores'
 
-let data = await ii.json()
-let status = data.attributes ? data.attributes.current_state: infinyS.status
+let datai = await ii.json()
+let status = datai.attributes ? datai.attributes.current_state: infinyS.status
 
 msg += `Nombre: ${infinyS.name}\n`
 msg += `Estado: ${status}\n\n`
 }
 
-msg += `Enlace: ${res.meta.pagination.current_page}/${res.meta.pagination.total_pages}\n`
-msg += `Servidores: ${res.meta.pagination.count}`
+msg += `Enlace: ${resi.meta.pagination.current_page}/${res.meta.pagination.total_pages}\n`
+msg += `Servidores: ${resi.meta.pagination.count}`
 
 await conn.sendMessage(m.chat, { text: msg }, { quoted: m })
 break
