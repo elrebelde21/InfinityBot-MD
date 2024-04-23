@@ -463,7 +463,7 @@ var servers = resi.data
 
 let infinyS = servers.attributes
 
-let ii = await fetch('https://live.panel-infinitywa.store/api/client/servers/' + infinyS.uuid.split``[0], {
+let ii = await fetch('https://live.panel-infinitywa.store/api/client/servers/' + infinyS.uuid, {
 "method": "GET",
 "headers": {
 "Accept": "application/json",
