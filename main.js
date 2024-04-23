@@ -1506,8 +1506,8 @@ mentionedJid:[sender],
 "containsAutoReply": true,
 "mediaType": 1, 
 "thumbnailUrl": imagen1, 
-"mediaUrl": panel,
-"sourceUrl": panel
+"mediaUrl": dash,
+"sourceUrl": dash
 }}}, { quoted: fkontak })}
 break
            
@@ -1530,8 +1530,8 @@ mentionedJid:[sender],
 "containsAutoReply": true,
 "mediaType": 1, 
 "thumbnailUrl": imagen1, 
-"mediaUrl": panel,
-"sourceUrl": panel
+"mediaUrl": dash,
+"sourceUrl": dash
 }}}, { quoted: fkontak })
 break
            
@@ -1556,13 +1556,13 @@ mentionedJid:[sender],
 "containsAutoReply": true,
 "mediaType": 1, 
 "thumbnailUrl": imagen1, 
-"mediaUrl": panel,
-"sourceUrl": panel
+"mediaUrl": dash, 
+"sourceUrl": dash
 }}}, { quoted: fkontak })
 break
 
 case 'infohost': case 'host': {
-conn.sendMessage(m.chat, { text: lenguaje.info.text27(nna, host, paypal, fb),
+conn.sendMessage(m.chat, { text: lenguaje.info.text27(nna, host, dash, paypal, fb),
 contextInfo:{
 forwardedNewsletterMessageInfo: { 
 newsletterJid: '120363160031023229@newsletter', 
@@ -1577,7 +1577,7 @@ title: `🤖 𝐈𝐍𝐅𝐈𝐍𝐈𝐓𝐘𝐖𝐀-𝐇𝐎𝐒𝐓 🤖`,
 body: `✅ Hosting de Calidad`,
 "previewType": "PHOTO",
 thumbnailUrl: 'https://qu.ax/EQTd.jpg', 
-"sourceUrl": panel}}},
+"sourceUrl": dash}}},
 { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 break
 
@@ -1606,6 +1606,9 @@ break
 
 case 'panel': case 'pagina': {
 m.reply(panel)}
+break
+case 'dash': case 'dashboard':{
+m.reply(dash)}
 break
 case 'grupos': {
 m.reply(nn)}
