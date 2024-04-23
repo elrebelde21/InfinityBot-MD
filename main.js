@@ -450,7 +450,7 @@ break
 
 case 'test': {
 if (!text) return conn.sendMessage(m.chat, {text: 'Nombre de Usuario' }, {quoted: m})
-let i = await fetch(`https://live.panel-infinitywa.store/api/application/servers?page=` + ${text}, {
+let i = await fetch(`https://live.panel-infinitywa.store/api/application/servers?page=` + text, {
 'method': 'GET',
 'headers': {
 'Accept': 'application/json',
