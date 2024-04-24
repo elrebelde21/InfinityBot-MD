@@ -487,7 +487,7 @@ await conn.sendMessage(m.chat, { text: msg }, { quoted: m })
 }
 break	
 
-case 'ia': case 'chatgpt':
+case 'ia': case 'chatgpt': {
 if (!text) return conn.sendMessage(from, { text: `*INGRESE EL TEXTO DE LOS QUE QUIERE BUSCAR?*` }, { quoted: msg })
 try {
 await conn.sendPresenceUpdate('composing', m.chat)
@@ -495,10 +495,13 @@ let syst = `Eres InfinityBot-MD, un gran modelo de lenguaje entrenado por OpenAI
 let gpt = await fetch(global.API('fgmods', '/api/info/openai', { prompt: syst, text }, 'apikey'));
 let res = await gpt.json()
 await m.reply(res.result)
-} else {
+} catch {
+try {
 let gpt = await fetch(`https://delirius-api-oficial.vercel.app/api/chatgpt?q=${text}`);
 let res = await gpt.json()
-await m.reply(res.data)}
+await m.reply(res.data)
+} catch (e) {
+console.log(e)}}}
 break
 case 'chatgpt2': case 'ia2': {
 if (!text) return conn.sendMessage(from, { text: `*INGRESE EL TEXTO DE LOS QUE QUIERE BUSCAR?*` }, { quoted: msg })   
@@ -515,10 +518,13 @@ await conn.sendPresenceUpdate('composing', m.chat)
 let gpt = await fetch(global.API('fgmods', '/api/info/gemini', { text }, 'apikey'));
 let res = await gpt.json()
 await m.reply(res.result)
-} else {
+} catch {
+try {
 let gpt = await fetch(`https://delirius-api-oficial.vercel.app/api/gemini?query=${text}`);
 let res = await gpt.json()
-await m.reply(res.message)}}
+await m.reply(res.message)
+} catch (e) {
+console.log(e)}}}
 break
 
 case 'copilot': case 'bing': {
