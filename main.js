@@ -1629,6 +1629,7 @@ conn.sendTextWithMentions(m.chat, `👑 𝐌𝐈 𝐂𝐑𝐄𝐀𝐃𝐎𝐑 �
 • @5217442363122
 • @51935531943
 • @50492280729
+• @51955918117
 • ${fb}
 
 > *Contáctelos si necesita ayudar o tiene alguna pregunta. Por favor, evite molestar, ya que podrían bloquearlo 😉*`)}
