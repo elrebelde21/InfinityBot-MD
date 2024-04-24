@@ -489,19 +489,44 @@ break
 
 case 'ia': case 'chatgpt':
 if (!text) return conn.sendMessage(from, { text: `*INGRESE EL TEXTO DE LOS QUE QUIERE BUSCAR?*` }, { quoted: msg })
+try {
 await conn.sendPresenceUpdate('composing', m.chat)
 let syst = `Eres InfinityBot-MD, un gran modelo de lenguaje entrenado por OpenAI. Siga cuidadosamente las instrucciones del usuario. Responde usando Markdown.`
 let gpt = await fetch(global.API('fgmods', '/api/info/openai', { prompt: syst, text }, 'apikey'));
 let res = await gpt.json()
 await m.reply(res.result)
+} else {
+let gpt = await fetch(`https://delirius-api-oficial.vercel.app/api/chatgpt?q=${text}`);
+let res = await gpt.json()
+await m.reply(res.data)}
+break
+case 'chatgpt2': case 'ia2': {
+if (!text) return conn.sendMessage(from, { text: `*INGRESE EL TEXTO DE LOS QUE QUIERE BUSCAR?*` }, { quoted: msg })   
+await conn.sendPresenceUpdate('composing', m.chat) 
+let gpt = await fetch(`https://delirius-api-oficial.vercel.app/api/ia2?text=${text}`);
+let res = await gpt.json()
+await m.reply(res.gpt)}
 break
 
 case 'gemini': {
 if (!text) return conn.sendMessage(from, { text: `*INGRESE EL TEXTO DE LOS QUE QUIERE BUSCAR?*` }, { quoted: msg })
+try {
 await conn.sendPresenceUpdate('composing', m.chat)
 let gpt = await fetch(global.API('fgmods', '/api/info/gemini', { text }, 'apikey'));
 let res = await gpt.json()
-await m.reply(res.result)}
+await m.reply(res.result)
+} else {
+let gpt = await fetch(`https://delirius-api-oficial.vercel.app/api/gemini?query=${text}`);
+let res = await gpt.json()
+await m.reply(res.message)}}
+break
+
+case 'copilot': case 'bing': {
+if (!text) return conn.sendMessage(from, { text: `*INGRESE EL TEXTO DE LOS QUE QUIERE BUSCAR?*` }, { quoted: msg })    
+await conn.sendPresenceUpdate('composing', m.chat)
+let gpt = await fetch(`https://delirius-api-oficial.vercel.app/api/bingia?query=${text}`);
+let res = await gpt.json()
+await m.reply(res.message)}
 break
 
 case 'welcome': case 'antilink': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antilink2': case 'antitwiter':case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'AntiFacebook': case 'antifacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'antiviewonce': case 'antitoxic': case 'autodetect': case 'detect': { 
