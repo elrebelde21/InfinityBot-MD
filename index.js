@@ -459,7 +459,7 @@ const time = moment.tz('America/Bogota').format('HH:mm:ss')
 const date = moment.tz('America/Bogota').format('DD/MM/YYYY')
 let name = num
 const miembros = metadata.participants.length
-sock.sendMessage(anu.id, { text: `${metadata.subject}\n\nBienvenido @${name.split("@")[0]}
+sock.sendMessage(anu.id, { text: `${pickRandom([`${metadata.subject}\n\nBienvenido @${name.split("@")[0]}
 
 _*💢Te ofrecemos un hosting de calidad, a un precio accesible, barato, todos pueden comprarlo*_
 
@@ -471,7 +471,21 @@ _*💢Te ofrecemos un hosting de calidad, a un precio accesible, barato, todos p
 
 *❇️Contactar con staff usando el siguiente comando :*
 #solicitud (Pronto alguien de staff se comunidad rápido con usted) 
-#staff`, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+#staff`, `🔥🌟 ¡𝐈𝐧𝐟𝐢𝐧𝐢𝐭𝐲-𝐖𝐚 𝑯𝒐𝒔𝒕𝒊𝒏𝒈! 🌟🔥
+
+¡Bienvenido @${name.split("@")[0]}!
+
+_*💥 Descubre nuestro hosting de calidad a un precio increíblemente accesible para todos!*_
+
+*🚀 ¿Quieres conocer nuestros precios? Utiliza el siguiente comando:*
+#precios
+
+*💳 ¿Cuáles son nuestros métodos de pago? :*
+#pagos
+
+*✨ ¡Contáctanos con el siguiente comando y nuestro equipo te atenderá rápidamente! :*
+#solicitud (¡Pronto un miembro de nuestro equipo se pondrá en contacto contigo!)
+#staff`])}`, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})//`
 } else if (anu.action == 'remove') {
 const buffer = await getBuffer(ppuser)
 let name = num
