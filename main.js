@@ -769,6 +769,19 @@ console.log(stderr)
 }}
 break
 
+case 'setrules': case 'addrules': case 'addrule': {
+let chat = global.db.data.chats[m.chat]
+if (!text) return m.reply(`⚠️ Escriba la regla del Grupo`)  
+chat.rules = text
+m.reply(`${lenguaje['exito']()}`)}
+break
+
+case 'reglas': case 'rule': case 'rules': {
+let chat = global.db.data.chats[m.chat]
+if (!chat.rules === '') m.reply(`Sin reglas`) 
+m.reply(`*${chat.rules}`)}
+break		
+		
 case 'grupo':
 if (!m.isGroup) return reply(info.group);  
 if (!isBotAdmins) return reply(info.botAdmin)
