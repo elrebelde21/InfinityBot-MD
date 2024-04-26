@@ -758,7 +758,7 @@ const exec = promisify(cp.exec).bind(cp);
 let o;
 conn.fakeReply(m.chat, `🚀 𝐏𝐫𝐮𝐞𝐛𝐚 𝐝𝐞 𝐯𝐞𝐥𝐨𝐜𝐢𝐝𝐚𝐝`, '0@s.whatsapp.net', 'test')
 try {
-o = await exec('python3 ookla-speedtest.py --secure --share');
+o = await exec('python3 speed.py --secure --share');
 const {stdout, stderr} = o;
 if (stdout.trim()) {
 const match = stdout.match(/http[^"]+\.png/);
