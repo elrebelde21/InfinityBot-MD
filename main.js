@@ -1473,6 +1473,7 @@ ${dash}
 [🚩] ${prefix}speed
 [🚩] ${prefix}grupos 
 [🚩] ${prefix}panel
+[🚩] ${prefix}reglas
 
 ||- *_-GRUPOS-_*
 ||- *_-ADMINISTRADORES-_*
