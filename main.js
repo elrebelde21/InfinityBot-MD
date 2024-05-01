@@ -1589,12 +1589,14 @@ case 'pagos': case 'pago':
 conn.sendMessage(from, { 
 text: `*🛍️Método de pago :*
 
-*• PayPal :* paypal.me/OfcGB
-*• Mercado pago, alías:* OficialGB
-*• Naranja x, alías:* OficialGL
-*• Yape (Perú) :* +51948705559
-*• Nequi (Colombia):* +573027866596
-*• DolarApp:* $oficialgb`,
+*• PayPal :* paypal.me/OfcGB (🌎) 
+*• Mercado pago, alías:* OficialGB (🇦🇷🇵🇪🇺🇾🇲🇽🇨🇴🇧🇷🇨🇱) 
+*• Naranja x, alías:* OficialGL (🇦🇷) 
+*• Yape (Perú) :* +51948705559 (🇵🇪) 
+*• Nequi (Colombia):* +573027866596 (🇨🇴) 
+*• Uala:* thelolibotm.uala (🇦🇷🇲🇽🇨🇴) 
+*• DolarApp:* $oficialgb (🇫🇰🇱🇷🇲🇽🇨🇴) 
+*• Link de pago:* link.mercadopago.com.ar/h0sting (🌎)`,
 contextInfo:{
 forwardingScore: 9999999,
 isForwarded: true, 
