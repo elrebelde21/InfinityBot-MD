@@ -310,6 +310,12 @@ ${host}
 *• Mercado pago, alías:* OficialGB
 *• Naranja x, alías:* OficialGL
 *• Yape (Perú) :* +51948705559
+*• Nequi (Colombia):* +573027866596
+*• Uala:* thelolibotm.uala
+*• DolarApp:* $oficialgb
+*• Link de pago:* _link.mercadopago.com.ar/h0sting_
+*• Kofi:* https://ko-fi.com/infinitywa
+*• solo pago con tarjeta:* wa.me/+390684003755
 
 *\`💙 Contactanos para más información o alquidir los servicios:\`*
 • ${fb}
