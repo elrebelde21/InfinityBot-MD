@@ -1628,7 +1628,7 @@ text: `*🛍️Método de pago :*
 *• DolarApp:* $oficialgb (🇫🇰🇱🇷🇲🇽🇨🇴) 
 *• Link de pago:* link.mercadopago.com.ar/h0sting (🌎)
 *• Kofi:* https://ko-fi.com/infinitywa
-*• Solo pago con tarjeta:* wa.me/+390684003755`,
+*• Solo pago con tarjeta:* wa.me/390684003755`,
 contextInfo:{
 forwardingScore: 9999999,
 isForwarded: true, 
@@ -1675,6 +1675,7 @@ case 'owner': case 'creator': case 'creador': case 'staff': {
 conn.sendTextWithMentions(m.chat, `👑 𝐌𝐈 𝐂𝐑𝐄𝐀𝐃𝐎𝐑 𝐄𝐒: wa.me/message/FETBF7YBO37CG1
 
 🚩 𝐒𝐓𝐀𝐅𝐅 𝐃𝐄𝐋 𝐇𝐎𝐒𝐓𝐈𝐍𝐆: 
+• @390684003755
 • @527294888993
 • @5492964650915
 • @573012482597
