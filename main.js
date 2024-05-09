@@ -1626,7 +1626,9 @@ text: `*🛍️Método de pago :*
 *• Nequi (Colombia):* +573027866596 (🇨🇴) 
 *• Uala:* thelolibotm.uala (🇦🇷🇲🇽🇨🇴) 
 *• DolarApp:* $oficialgb (🇫🇰🇱🇷🇲🇽🇨🇴) 
-*• Link de pago:* link.mercadopago.com.ar/h0sting (🌎)
+
+*• Link de pago:* link.mercadopago.com.ar/h0sting 
+*• Patreon:* https://patreon.com/Infinity_wa_hosting
 *• Kofi:* https://ko-fi.com/infinitywa
 *• Solo pago con tarjeta:* wa.me/390684003755`,
 contextInfo:{
