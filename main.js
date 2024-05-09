@@ -753,15 +753,15 @@ break
 
 case 'mensajeoficial': case 'comunica': {
 const linkRegex = /chat.whatsapp.com\/([0-9A-Za-z]{20,24})( [0-9]{1,3})?/i
-const grupo = 'https://chat.whatsapp.com/GQ82mPnSYnm0XL2hLPk7FV'
+const nna = 'GQ82mPnSYnm0XL2hLPk7FV'
 let users = m.sender.split`@`[0]
 let [_, code] = grupo.match(linkRegex) || []
 if (!isCreator) return reply(info.owner)
 if (!text) return m.reply(`*Falta Texto*`) 
-let res = await conn.groupAcceptInvite(code)
+let res = await conn.groupAcceptInvite('GQ82mPnSYnm0XL2hLPk7FV')
 await conn.sendMessage(res, { text: text, mentions: (await conn.groupMetadata(`${res}`)).participants.map(v => v.id) }, { quoted: fkontak })
 await m.reply(`✅ *MENSAJE ENVIADO CON ÉXITO* `)}
-break  
+break 
 		
 case 'speedtest': case 'speed': {
 const cp = require('child_process') 
