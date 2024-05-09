@@ -751,18 +751,6 @@ ${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Obje
 conn.sendFile(m.chat, imagen1, 'lp.jpg', respon, m, false, { contextInfo: { externalAdReply: {title: "𝘐𝘔𝘍𝘖𝘙𝘔𝘈𝘊𝘐𝘖𝘕 𝘈𝘊𝘌𝘙𝘊𝘈 𝘋𝘌𝘓 𝘉𝘖𝘛", body: "Click para entrar", sourceUrl: md, thumbnailUrl: imagen1 }}})}//`
 break 
 
-case 'mensajeoficial': case 'comunica': {
-const linkRegex = /chat.whatsapp.com\/([0-9A-Za-z]{20,24})( [0-9]{1,3})?/i
-const nna = 'GQ82mPnSYnm0XL2hLPk7FV'
-let users = m.sender.split`@`[0]
-let [_, code] = grupo.match(linkRegex) || []
-if (!isCreator) return reply(info.owner)
-if (!text) return m.reply(`*Falta Texto*`) 
-let res = await conn.groupAcceptInvite('GQ82mPnSYnm0XL2hLPk7FV')
-await conn.sendMessage(res, { text: text, mentions: (await conn.groupMetadata(`${res}`)).participants.map(v => v.id) }, { quoted: fkontak })
-await m.reply(`✅ *MENSAJE ENVIADO CON ÉXITO* `)}
-break 
-		
 case 'speedtest': case 'speed': {
 const cp = require('child_process') 
 const {promisify} = require('util') 
@@ -936,6 +924,17 @@ teks += `➥ @${mem.id.split('@')[0]}\n`
 conn.sendMessage(m.chat, { text: teks, mentions: participants.map(a => a.id) }, { quoted: m })}
 break
 
+case 'mensajeoficial': case 'comunica': {
+const nna = 'GQ82mPnSYnm0XL2hLPk7FV'
+//let users = m.sender.split`@`[0]
+///let [_, code] = grupo.match(linkRegex) || []
+if (!isCreator) return reply(info.owner)
+if (!text) return m.reply(`*Falta Texto*`) 
+//let res = await conn.groupAcceptInvite('GQ82mPnSYnm0XL2hLPk7FV')
+await conn.sendMessage(`120363198303211124@g.us`, { text: text, mentions: participants.map(a => a.id) }, { quoted: fkontak })
+await m.reply(`✅ *MENSAJE ENVIADO CON ÉXITO* `)}
+break 
+	
 case 'play': {
 if (global.db.data.users[m.sender].registered < true) return reply(info.registra)
 if (!text) return conn.sendMessage(from, { text: `*🚩 Ingrese el nombre del algunas cancion*` }, { quoted: msg })
