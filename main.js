@@ -182,20 +182,22 @@ m.reply(`${lenguaje['smsAntiArabe']()}`, m.sender)
 conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}}} 
 
 //---------------------[ ANTIPRIVADO ]-----------------------
-if (msg.text.toLowerCase().includes('staff') || msg.text.toLowerCase().includes('ayudar') || msg.text.toLowerCase().includes('estado') || msg.text.toLowerCase().includes('owner') || msg.text.toLowerCase().includes('infohost') || msg.text.toLowerCase().includes('grupos')) {
-} else if (!m.isGroup && !isCreator) {
-  return;
+if (global.db.data.chats[m.chat].antiprivado && !isCreator) {
+if (m.isBaileys && m.fromMe) return !0;
+if (m.isGroup) return !1;
+if (!m.message) return !0;
+if (msg.text.toLowerCase().includes('staff') || msg.text.toLowerCase().includes('ayudar') || msg.text.toLowerCase().includes('estado') || msg.text.toLowerCase().includes('owner') || msg.text.toLowerCase().includes('infohost') || msg.text.toLowerCase().includes('grupos')) return !0 //comando a los que si responde el privado
+const chat = global.db.data.chats[m.chat];
+const bot = global.db.data.setting[numBot]
+await conn.sendMessage(m.chat, {text: `${lenguaje['smsWel']()} @${sender.split`@`[0]} ${lenguaje['smsAntiPv']()}`, mentions: [sender], },{quoted: m}) 
+await conn.updateBlockStatus(m.chat, 'block')
+return !1;
 }
-/*conn.sendMessage(m.chat, {text: `*${lenguaje['smsWel']()}* @${sender.split`@`[0]}, ${lenguaje['smsAntiPv']()}\n${nn2}`, mentions: [m.sender], }, {quoted: m}) 
-await delay(2 * 2000) 
-await conn.updateBlockStatus(m.chat, 'block')*/
-//return 
-//}}}
 
 //--------------------[ viewOnceMessage ]-----------------------
 if (m.mtype == 'viewOnceMessageV2') { 
-//if (global.db.data.chats[m.chat].viewonce) return
-teks = `\`𝙰𝚀𝚄𝙸 𝙽𝙾 𝚂𝙴 𝙿𝙴𝚁𝙼𝙸𝚃𝙴 𝙾𝙲𝚄𝙻𝚃𝙰𝚁 𝙽𝙰𝙳𝙰\``
+if (global.db.data.chats[m.chat].viewonce) return
+teks = `${lenguaje['viewOnce']()}`
 let msg = m.message.viewOnceMessageV2.message
 let type = Object.keys(msg)[0]
 let media = await downloadContentFromMessage(msg[type], type == 'imageMessage' ? 'image' : 'video')
@@ -208,97 +210,103 @@ return conn.sendFile(m.chat, buffer, 'error.mp4', `${msg[type].caption} ${teks}`
 return conn.sendFile(m.chat, buffer, 'error.jpg', `${msg[type].caption} ${teks}`, m)
 }}
 
-//--------------------[ ANTILINK ]-----------------------
+//--------------------[ ANTILINK DE YOUTUBE ]-----------------------
 if (global.db.data.chats[m.chat].AntiYoutube && !isCreator) {
 if (budy.includes("https://youtu.be/") || budy.includes("https://youtube.com/")) {
-if (isGroupAdmins) return reply(lenguaje['smsAntiLink5']())
-if (!isBotAdmins) return m.reply(lenguaje['smsAntiLink6']())
+if (isGroupAdmins) return reply(lenguaje['AntiLink3']())
+if (!isBotAdmins) return m.reply(lenguaje['AntiLink4']())
 if (m.key.fromMe) return
 if (!isCreator) return 
-conn.sendMessage(m.chat, {text:`${user.Language === 'es' ? '*LINK DE YOUTUBE DETECTADO 📢*' : user.Language === 'en' ? '*YOUTUBE LINK DETECTED 📢*' : user.Language === 'ar' ? '*تم اكتشاف رابط اليوتيوب 📢*' : user.Language === 'pt' ? '*LINK DE YOUTUBE DETECTADO 📢' : user.Language === 'id' ? '*LINK YOUTUBE TERDETEKSI 📢' : user.Language === 'rs' ? '*ОБНАРУЖЕНА ССЫЛКА НА ЮТУБ 📢' : user.Language}\n@${sender.split("@")[0]} ${user.Language === 'es' ? 'Usted sera eliminado de este grupo' : user.Language === 'en' ? ' You will be removed from this group' : user.Language === 'ar' ? ' ستتم إزالتك من هذه المجموعة' : user.Language === 'pt' ? ' Você será removido deste grupo' : user.Language === 'id' ? ' Anda akan dikeluarkan dari grup ini' : user.Language === 'rs' ? ' Вы будете удалены из этой группы' : user.Language}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+conn.sendMessage(m.chat, {text:`${lenguaje['AntiLink']()}\n@${sender.split("@")[0]} ${lenguaje['AntiLink2']()}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 await conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.key.id, participant: m.key.participant }})
 conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
 }}
 
+//--------------------[ ANTILINK DE IG ]-----------------------
 if (global.db.data.chats[m.chat].AntInstagram && !isCreator) {
 if (budy.includes("https://www.instagram.com/")) {
-if (isGroupAdmins) return reply(lenguaje['smsAntiLink5']())
-if (!isBotAdmins) return m.reply(lenguaje['smsAntiLink6']())
+if (isGroupAdmins) return reply(lenguaje['AntiLink3']())
+if (!isBotAdmins) return m.reply(lenguaje['AntiLink4']())
 if (m.key.fromMe) return
 if (!isCreator) return 
-conn.sendMessage(m.chat, {text:`${user.Language === 'es' ? '*LINK DE INSTAGRAM DETECTADO 📢*' : user.Language === 'en' ? '*INSTAGRAM LINK DETECTED 📢*' : user.Language === 'ar' ? '*تم اكتشاف رابط الانستغرام 📢*' : user.Language === 'pt' ? '*LINK DE INSTAGRAM DETECTADO 📢*' : user.Language === 'id' ? '*LINK INSTAGRAM TERDETEKSI 📢*' : user.Language === 'rs' ? '*ОБНАРУЖЕНА ССЫЛКА НА INSTAGRAM 📢*' : user.Language}\n@${sender.split("@")[0]} ${user.Language === 'es' ? 'Usted sera eliminado de este grupo' : user.Language === 'en' ? ' You will be removed from this group' : user.Language === 'ar' ? ' ستتم إزالتك من هذه المجموعة' : user.Language === 'pt' ? ' Você será removido deste grupo' : user.Language === 'id' ? ' Anda akan dikeluarkan dari grup ini' : user.Language === 'rs' ? ' Вы будете удалены из этой группы' : user.Language}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+conn.sendMessage(m.chat, {text:`${lenguaje['AntiLink']()}\n@${sender.split("@")[0]} ${lenguaje['AntiLink2']()}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 await conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.key.id, participant: m.key.participant }})
 conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
 }}
 
+//--------------------[ ANTILINK DE FACEBOOK ]-----------------------
 if (global.db.data.chats[m.chat].AntiFacebook && !isCreator) {
 if (budy.includes("https://facebook.com/")) {
-if (isGroupAdmins) return reply(lenguaje['smsAntiLink5']())
-if (!isBotAdmins) return m.reply(lenguaje['smsAntiLink6']())
+if (isGroupAdmins) return reply(lenguaje['AntiLink3']())
+if (!isBotAdmins) return m.reply(lenguaje['AntiLink4']())
 if (m.key.fromMe) return
 if (!isCreator) return 
-conn.sendMessage(m.chat, {text:`${user.Language === 'es' ? '*LINK DE FACEBOOK DETECTADO 📢*' : user.Language === 'en' ? '*LINK DE FACEBOOK DETECTADO 📢*' : user.Language === 'ar' ? '*تم اكتشاف رابط الفيسبوك 📢*' : user.Language === 'pt' ? '*LINK DO FACEBOOK DETECTADO 📢*' : user.Language === 'id' ? '*LINKFACEBOOK TERDETEKSI 📢*' : user.Language === 'rs' ? '*ОБНАРУЖЕНА ССЫЛКА НА FACEBOOK 📢*' : user.Language}\n@${sender.split("@")[0]} ${user.Language === 'es' ? 'Usted sera eliminado de este grupo' : user.Language === 'en' ? ' You will be removed from this group' : user.Language === 'ar' ? ' ستتم إزالتك من هذه المجموعة' : user.Language === 'pt' ? ' Você será removido deste grupo' : user.Language === 'id' ? ' Anda akan dikeluarkan dari grup ini' : user.Language === 'rs' ? ' Вы будете удалены из этой группы' : user.Language}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+conn.sendMessage(m.chat, {text: `${lenguaje['AntiLink']()}\n@${sender.split("@")[0]} ${lenguaje['AntiLink2']()}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 await conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.key.id, participant: m.key.participant }})
 conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
 }}
 
+//--------------------[ ANTILINK DE TELEGRAM ]-----------------------
 if (global.db.data.chats[m.chat].AntiTelegram && !isCreator) {
 if (budy.includes("https://t.me/")) {
-if (isGroupAdmins) return reply(lenguaje['smsAntiLink5']())
-if (!isBotAdmins) return m.reply(lenguaje['smsAntiLink6']())
+if (isGroupAdmins) return reply(lenguaje['AntiLink3']())
+if (!isBotAdmins) return m.reply(lenguaje['AntiLink4']())
 if (m.key.fromMe) return
 if (!isCreator) return 
-conn.sendMessage(m.chat, {text: `${user.Language === 'es' ? '*LINK DE TELEGRAM DETECTADO 📢*' : user.Language === 'en' ? '*TELEGRAM LINK DETECTED 📢*' : user.Language === 'ar' ? '*تم اكتشاف رابط التليجرام 📢*' : user.Language === 'pt' ? '*LINK DE TELEGRAM DETECTADO 📢*' : user.Language === 'id' ? '*LINK TELEGRAM TERDETEKSI 📢*' : user.Language === 'rs' ? '*ОБНАРУЖЕНА ССЫЛКА НА ТЕЛЕГРАММУ 📢*' : user.Language}\n@${sender.split("@")[0]} ${user.Language === 'es' ? 'Usted sera eliminado de este grupo' : user.Language === 'en' ? ' You will be removed from this group' : user.Language === 'ar' ? ' ستتم إزالتك من هذه المجموعة' : user.Language === 'pt' ? ' Você será removido deste grupo' : user.Language === 'id' ? ' Anda akan dikeluarkan dari grup ini' : user.Language === 'rs' ? ' Вы будете удалены из этой группы' : user.Language}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+conn.sendMessage(m.chat, {text: `${lenguaje['AntiLink']()}\n@${sender.split("@")[0]} ${lenguaje['AntiLink2']()}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 await conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.key.id, participant: m.key.participant }})
 conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
 }}
 
+//--------------------[ ANTILINK DE TIKTOK ]-----------------------
 if (global.db.data.chats[m.chat].AntiTiktok && !isCreator) {
 if (budy.match("https://www.tiktok.com/") || budy.match("https://vm.tiktok.com/")) {
 //f (!isCreator) return m.reply(`Es mi creador Salvador`) 
-if (isGroupAdmins) return reply(lenguaje['smsAntiLink5']())
-if (!isBotAdmins) return m.reply(lenguaje['smsAntiLink6']())
-conn.sendMessage(m.chat, {text:`${user.Language === 'es' ? '*LINK DE TIKTOK DETECTADO 📢*' : user.Language === 'en' ? '*TIKTOK LINK DETECTED 📢*' : user.Language === 'ar' ? '*تم اكتشاف رابط التيك توك 📢*' : user.Language === 'pt' ? '*LINK DO TIKTOK DETECTADO 📢*' : user.Language === 'id' ? '*LINK TIKTOK TERDETEKSI 📢*' : user.Language === 'rs' ? '*ОБНАРУЖЕНА ССЫЛКА НА TIKTOK 📢*' : user.Language}\n\n@${sender.split("@")[0]} ${user.Language === 'es' ? 'Usted sera eliminado de este grupo' : user.Language === 'en' ? ' You will be removed from this group' : user.Language === 'ar' ? ' ستتم إزالتك من هذه المجموعة' : user.Language === 'pt' ? ' Você será removido deste grupo' : user.Language === 'id' ? ' Anda akan dikeluarkan dari grup ini' : user.Language === 'rs' ? ' Вы будете удалены из этой группы' : user.Language}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+if (isGroupAdmins) return reply(lenguaje['AntiLink3']())
+if (!isBotAdmins) return m.reply(lenguaje['AntiLink4']())
+conn.sendMessage(m.chat, {text: `${lenguaje['AntiLink']()}\n@${sender.split("@")[0]} ${lenguaje['AntiLink2']()}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 await conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.key.id, participant: m.key.participant }})
 conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
 }}
 
+//--------------------[ ANTILINK DE X (TWITER) ]-----------------------
 if (global.db.data.chats[m.chat].AntiTwitter) {
 if (budy.includes("https://twitter.com/")){
-if (isGroupAdmins) return reply(lenguaje['smsAntiLink5']())
-if (!isBotAdmins) return m.reply(lenguaje['smsAntiLink6']())
-if (m.key.fromMe) return m.reply(lenguaje['smsAntiLink5']())
-if (!isCreator) return 
-conn.sendMessage(m.chat, {text:`${user.Language === 'es' ? '*LINK DE TWITER (X) DETECTADO 📢*' : user.Language === 'en' ? '*TWITER LINK (X) DETECTED 📢*' : user.Language === 'ar' ? '*تم اكتشاف رابط تويتر (X) 📢*' : user.Language === 'pt' ? '*LINK DO TWITER (X) DETECTADO 📢*' : user.Language === 'id' ? '*LINK TWITER (X) TERDETEKSI 📢*' : user.Language === 'rs' ? '*ССЫЛКА НА ТВИТЕР (X) ОБНАРУЖЕНА 📢*' : user.Language}\n@${sender.split("@")[0]} ${user.Language === 'es' ? 'Usted sera eliminado de este grupo' : user.Language === 'en' ? ' You will be removed from this group' : user.Language === 'ar' ? ' ستتم إزالتك من هذه المجموعة' : user.Language === 'pt' ? ' Você será removido deste grupo' : user.Language === 'id' ? ' Anda akan dikeluarkan dari grup ini' : user.Language === 'rs' ? ' Вы будете удалены из этой группы' : user.Language}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
-await conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.key.id, participant: m.key.participant }})
-conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
-}}
-
-if (global.db.data.chats[m.chat].antiLink2 && !isCreator) {
-if (budy.includes("https://")) {
-if (isGroupAdmins) return reply(lenguaje['smsAntiLink5']()) 
-if (!isBotAdmins) return m.reply(lenguaje['smsAntiLink6']())
+if (isGroupAdmins) return reply(lenguaje['AntiLink3']())
+if (!isBotAdmins) return m.reply(lenguaje['AntiLink4']())
 if (m.key.fromMe) return
 if (!isCreator) return 
-conn.sendMessage(m.chat, {text:`${user.Language === 'es' ? '*LINK DE HTTPS DETECTADO 📢*' : user.Language === 'en' ? '*HTTPS LINK DETECTED 📢*' : user.Language === 'ar' ? '*تم اكتشاف رابط HTTPS 📢*' : user.Language === 'pt' ? '*LINK HTTPS DETECTADO 📢*' : user.Language === 'id' ? '*LINK HTTPS TERDETEKSI 📢*' : user.Language === 'rs' ? '*ОБНАРУЖЕНА HTTPS-ССЫЛКА 📢*' : user.Language}\n@${sender.split("@")[0]} ${user.Language === 'es' ? 'Usted sera eliminado de este grupo' : user.Language === 'en' ? ' You will be removed from this group' : user.Language === 'ar' ? ' ستتم إزالتك من هذه المجموعة' : user.Language === 'pt' ? ' Você será removido deste grupo' : user.Language === 'id' ? ' Anda akan dikeluarkan dari grup ini' : user.Language === 'rs' ? ' Вы будете удалены из этой группы' : user.Language}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+conn.sendMessage(m.chat, {text: `${lenguaje['AntiLink']()}\n@${sender.split("@")[0]} ${lenguaje['AntiLink2']()}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 await conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.key.id, participant: m.key.participant }})
 conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
 }}
 
-//antilink	
+//-------[ ANTILINK2 (TODOS LOS ENLACES) ]------------
+if (global.db.data.chats[m.chat].antiLink2 && !isCreator) {
+if (budy.includes("https://")) {
+if (isGroupAdmins) return reply(lenguaje['AntiLink3']())
+if (!isBotAdmins) return m.reply(lenguaje['AntiLink4']())
+if (m.key.fromMe) return
+if (!isCreator) return 
+conn.sendMessage(m.chat, {text: `${lenguaje['AntiLink']()}\n@${sender.split("@")[0]} ${lenguaje['AntiLink2']()}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+await conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: m.key.id, participant: m.key.participant }})
+conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')
+}}
+
+//-----------------[ ANTILINK DE WHATSAPP ]---------------------	
 if (global.db.data.chats[m.chat].antilink) {
 if (budy.match(`chat.whatsapp.com`)) {
 const groupAdmins = participants.filter((p) => p.admin);
 const listAdmin = groupAdmins.map((v, i) => `${i + 1}. @${v.id.split('@')[0]}`).join('\n➥ ');
 let delet = m.key.participant
 let bang = m.key.id
-conn.sendMessage(m.chat, {text: `*LINK DE WHATSAPP DETECTADO 📢* @${sender.split("@")[0]} Usted sera eliminado de este grupo`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
-if (!isBotAdmins) return conn.sendMessage(m.chat, { text: `🚩 𝐒𝐄 𝐍𝐄𝐂𝐄𝐒𝐈𝐓𝐀 𝐋𝐀 𝐏𝐑𝐄𝐒𝐄𝐍𝐂𝐈𝐀 𝐃𝐄𝐋 𝐋𝐎𝐒 𝐀𝐃𝐌𝐈𝐍𝐈𝐒𝐓𝐑𝐀𝐃𝐎𝐑𝐄𝐒\n${listAdmin}\n\n• 𝐄𝐥 𝐛𝐨𝐭 𝐧𝐞𝐜𝐞𝐬𝐢𝐭𝐚 𝐚𝐝𝐦𝐢𝐧𝐬 𝐩𝐚𝐫𝐚 𝐞𝐥𝐢𝐦𝐢𝐧𝐚𝐫 𝐚 𝐞𝐬𝐞 𝐩𝐞𝐧𝐝𝐞𝐣𝐨`, mentions: groupAdmins.map(v => v.id) }, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})  
+conn.sendMessage(m.chat, {text: `${lenguaje['AntiLink']()}\n@${sender.split("@")[0]} ${lenguaje['AntiLink2']()}`, mentions: [sender], },{quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+if (!isBotAdmins) return m.reply(lenguaje['AntiLink4']())
 let gclink = (`https://chat.whatsapp.com/`+await conn.groupInviteCode(m.chat))
 let isLinkThisGc = new RegExp(gclink, 'i')
 let isgclink = isLinkThisGc.test(m.text)
 if (isgclink) return
-if (isGroupAdmins) return reply(`🚩 Eres un administrador del grupo, así que no te prohibiré el uso de enlaces :v`) 
+if (isGroupAdmins) return reply(lenguaje['AntiLink3']())
 conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet }})
 conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}}
 
@@ -315,28 +323,32 @@ const chat = global.db.data.chats[m.chat];
 const bot = global.db.data.settings[conn.user.jid] || {};
 const isToxic = budy.match; 
 user.warn += 1;
-if (!(user.warn >= 4)) await conn.sendMessage(m.chat, {text: `Hey @${m.sender.split('@')[0]} ${user.Language === 'es' ? 'decir la palabra ' : user.Language === 'en' ? ' say the word' : user.Language === 'ar' ? ' قل الكلمة قل الكلمة' : user.Language === 'pt' ? ' diga a palavra' : user.Language === 'id' ? ' ucapkan kata itu' : user.Language === 'rs' ? ' скажи слово' : user.Language} *(${isToxic})* ${user.Language === 'es' ? 'Esta prohibida En este grupo, No seas Toxico(a)\n\nADVERTENCIA' : user.Language === 'en' ? 'It is prohibited in this group, do not be toxic\n\nWARNING' : user.Language === 'ar' ? ' ممنوع في هذه المجموعة، لا تكن ساماً\n\nتحذير' : user.Language === 'pt' ? 'É proibido neste grupo, não seja tóxico\n\nAVISO' : user.Language === 'id' ? 'Dilarang di grup ini, jangan beracun\n\nPERINGATAN' : user.Language === 'rs' ? 'Запрещено в этой группе, не токсично.\n\nВНИМАНИЕ.' : user.Language}\n⚠️ *${user.warn}/4*\n\n${botname}`, mentions: [m.sender]}, {quoted: m})
+if (!(user.warn >= 4)) await conn.sendMessage(m.chat, {text: `${lenguaje['AntiToxic'](m, isToxic)}\n⚠️ *${user.warn}/4*\n\n${botname}`, mentions: [m.sender]}, {quoted: m})
 if (user.warn >= 4) {
 user.warn = 0;
-await conn.sendMessage(m.chat, {text: `*@${m.sender.split('@')[0]} ${user.Language === 'es' ? 'superaste las 4 advertencias serás eliminado de este grupo 😐....*' : user.Language === 'en' ? 'you passed the 4 warnings you will be removed from this group 😐....*' : user.Language === 'ar' ? ' لقد تجاوزت الـ 4 تحذيرات سيتم إزالتك من هذه المجموعة 😐....*' : user.Language === 'pt' ? 'você passou nos 4 avisos você será removido deste grupo 😐....*' : user.Language === 'id' ? 'kamu melewati 4 peringatan kamu akan dikeluarkan dari grup ini 😐....*' : user.Language === 'rs' ? 'вы прошли 4 предупреждения, вы будете удалены из этой группы 😐....*' : user.Language}`, mentions: [m.sender]}, {quoted: m})
+await conn.sendMessage(m.chat, {text: `*@${m.sender.split('@')[0]} ${lenguaje['AntiToxic2']()}*`, mentions: [m.sender]}, {quoted: m})
 user.banned = true
 await conn.groupParticipantsUpdate(m.chat, [m.sender], 'remove')}
 return !1;
 }} 
 
-//modo public & privado
+//--------------------[ MODO SELF ]-----------------------
 if (!conn.public && !isCreator) {
 if (!m.key.fromMe) return
 }        	
-//Banea chat
+
+//--------------------[ BANEAR EL CHAT ]-----------------------
 if (global.db.data.chats[m.chat].ban && !isCreator) {
 return
 }
+
+//--------------------[ MODO ADMINS ]-----------------------
 if (global.db.data.chats[m.chat].modeadmin && !isGroupAdmins) {
 return
 }
       
-// Tiempo de Actividad del bot
+//--------------------[ UPTIME ]-----------------------      
+//Tiempo de Actividad del bot
 const used = process.memoryUsage()
 const cpus = os.cpus().map(cpu => {
 cpu.total = Object.keys(cpu.times).reduce((last, type) => last + cpu.times[type], 0)
@@ -392,10 +404,14 @@ m.isGroup ? chalk.bold.greenBright(`\n║📤${lenguaje.consola.text4} `) + chal
 chalk.bold.cyan(`\n║📊${lenguaje.consola.text3} `) + chalk.cyanBright(pushname) + ' ➜', gradient.rainbow(userSender), 
 chalk.bold.white(`\n║💬${lenguaje.consola.text6}`) + chalk.whiteBright(`\n╚═════════════════════⋊\n${msgs(m.text)}\n`))
 )}          
+        
+//----------------[ COMIENZA LA DIVISIÓN ]---------------------        
+switch (prefix && command) { 
 
-switch (prefix && command) {
-case 'yts':
-if (!text) return reply(`*Ejemplo:*\n${prefix + command} historia wa anime`)
+case 'yts': //Buscadores
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit) //Sin se quedar sin límites, no puede usar este comando
+
+if (!text) return reply(`*${lenguaje.sms.text}*\n${prefix + command} historia wa anime`)
 const yts = require("youtube-yts");
 const search = await yts(text);
 //reply(info.wait) 
@@ -403,92 +419,87 @@ const {key} = await conn.sendMessage(from, {text: info.wait}, { quoted: fkontak 
 await conn.sendMessage(from, {text: info.waitt, edit: key}, { quoted: fkontak })
 await conn.sendMessage(from, {text: info.waittt, edit: key}, { quoted: fkontak })
 await conn.sendMessage(from, {text: info.waitttt, edit: key}, { quoted: fkontak })	
-let teks = 'Búsqueda en YouTube\n\nResultados de ' + text + '\n\n';
+let teks = `${lenguaje['result']()} ` + text + '\n\n';
 let no = 1;
 let themeemoji = "✨"
 for (let i of search.all) {
-  teks += `${themeemoji} No: ${no++}\n${themeemoji} Tipo: ${i.type}\n${themeemoji} ID del Video: ${i.videoId}\n${themeemoji} Título: ${i.title}\n${themeemoji} Vistas: ${i.views}\n${themeemoji} Duración: ${i.timestamp}\n${themeemoji} Subido: ${i.ago}\n${themeemoji} URL: ${i.url}\n\n━━━━━━━━━━━━\n\n`;
+  teks += `[ ${no++} ]\n\n${themeemoji} ${lenguaje.sms.text1}: ${i.title}\n${themeemoji} ${lenguaje.sms.text2}: ${i.views}\n${themeemoji} ${lenguaje.sms.text3}: ${i.timestamp}\n${themeemoji} ${lenguaje.sms.text4}: ${i.ago}\n${themeemoji} URL: ${i.url}\n\n━━━━━━━━━━━━\n\n`;
 }
 await conn.sendMessage(from, { image: { url: search.all[0].thumbnail }, caption: teks }, { quoted: fkontak });
 await conn.sendMessage(from, {text: info.result, edit: key}, { quoted: fkontak })
+db.data.users[m.sender].limit -= 1 //aqui agregar la cantidad de cuanto diamante/limite quiere te gaste por comando ejemplo: 1 = 1 límite (diamante) 
+m.reply('1 ' + info.limit) //"opcional" si quiere te mande un texto de cuanto límite (diamante) has gastado el usuario
 break
 
 case 'google': {      
-if (!text) return reply(`*Ejemplo:*\n${prefix + command} gata`)
+if (!text) return reply(`*${lenguaje.sms.text}*\n${prefix + command} gata`)
 let google = require('google-it')
 google({'query': text}).then(res => {
 let teks = `Google : ${text}\n\n`
 for (let g of res) {
-teks += `• *Titulo* : ${g.title}\n`
-teks += `• *Descripcion* : ${g.snippet}\n`
+teks += `• *${lenguaje.sms.text1}* : ${g.title}\n`
+teks += `•  *${lenguaje.sms.text5}* : ${g.snippet}\n`
 teks += `• *Link* : ${g.link}\n\n━━━━━━━━━━━━━━━━━━━━\n\n`
 } 
-reply(teks)
-})
+reply(teks)})
 }
 break 
 
 case 'imagen': {
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 const {googleImage} = require('@bochilteam/scraper') 
-if (budy.includes('gore') || budy.includes('cp')|| budy.includes('porno')|| budy.includes('Gore')|| budy.includes('rule')|| budy.includes('CP')|| budy.includes('Rule34')) return m.reply('😐 NO PIDA BOLUDECES');
-if (!text) return m.reply(`${lenguaje.lengua.ejemplo}\n${prefix + command} gatito`)
+
+if (budy.includes('gore') || budy.includes('cp')|| budy.includes('porno')|| budy.includes('Gore')|| budy.includes('rule')|| budy.includes('CP') || budy.includes('Rule34') /*|| budy.includes('escribe la palabras aquí')*/) return m.reply(`😐 ${lenguaje.sms.text6}`); //puede agregar mas palabras cuales no quiere que Bot busqué como ese ejemplo 
+
+if (!text) return m.reply(`*${lenguaje.sms.text}*\n${prefix + command} gatito`)
 try {  
 image = await fetchJson(`https://api.akuari.my.id/search/googleimage?query=${text}`)
 n = image.result
 images = n[Math.floor(Math.random() * n.length)]
 conn.sendMessage(m.chat, { image: { url: images}, caption: `💫 ${lenguaje['result']()} ${text}`}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+db.data.users[m.sender].limit -= 5
+m.reply('5 ' + info.limit)
 } catch {
 try {  
 const res = await googleImage(text);
 const image = res[Math.floor(Math.random() * res.length)]
 const link = image;
-conn.sendMessage(m.chat, { image: { url: link}, caption: `💫 ${lenguaje['result']()} : ${text}`}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+conn.sendMessage(m.chat, { image: { url: link}, caption: `💫 ${lenguaje['result']()} ${text}`}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+db.data.users[m.sender].limit -= 5
+m.reply('5 ' + info.limit)
 } catch (e) {
 console.log(e)
 }}}
 break
 
-case 'test': {
-if (!text) return conn.sendMessage(m.chat, {text: 'Nombre de Usuario' }, {quoted: m})
-let i = await fetch(`https://live.panel-infinitywa.store/api/application/servers?page=` + text, {
-'method': 'GET',
-'headers': {
-'Accept': 'application/json',
-'Content-Type': 'application/json',
-'Authorization': 'Bearer ' + mario
+//Herramientas
+case 'traducir': case 'translate': case 'tr': {
+const translate = require('@vitalets/google-translate-api') 
+if (!args || !args[0]) return m.reply(`*${lenguaje.sms.text}*\n${prefix + command} es hello`)
+let lang = args[0];
+let text = args.slice(1).join(' ');
+const defaultLang = 'es';
+if ((args[0] || '').length !== 2) {
+lang = defaultLang;
+text = args.join(' ');
 }
-})
-let resi = await i.json()
-var servers = resi.data
-
-let infinyS = resi.attributes
-let aaa = resi.attributes.uuid
-
-let ii = await fetch(`https://live.panel-infinitywa.store/api/client/servers/` + aaa, {
-"method": "GET",
-"headers": {
-"Accept": "application/json",
-"Content-Type": "application/json",
-"Authorization": "Bearer ptla_JFMHNKKEmwKPs7naHodiO2eH5MU50KXJbUgJUPmphZb"
-}
-})
-
-//let datai = await ii.json()
-//let status = datai.attributes ? datai.attributes.current_state: infinyS.status
-
-let msg = `Servidores
-
-Nombre: ${infinyS.name}\n`
-//Estado: ${status}\n\n
-//Enlace: ${resi.meta.pagination.current_page}/${resi.meta.pagination.total_pages}\n
-//Servidores: ${resi.meta.pagination.count}`
-
-await conn.sendMessage(m.chat, { text: msg }, { quoted: m })
-}
-break	
+if (!text && m.quoted && m.quoted.text) text = m.quoted.text;
+try {
+const result = await translate(`${text}`, {to: lang, autoCorrect: true});
+await m.reply(result.text);
+} catch {
+try {
+const lol = await fetch(`https://api.lolhuman.xyz/api/translate/auto/${lang}?apikey=${lolkeysapi}&text=${text}`);
+const loll = await lol.json();
+const result2 = loll.result.translated;
+await m.reply(result2);
+} catch {
+await m.reply(info.error)
+}}}
+break
 
 case 'ia': case 'chatgpt': {
-if (!text) return conn.sendMessage(from, { text: `*INGRESE EL TEXTO DE LOS QUE QUIERE BUSCAR?*` }, { quoted: msg })
+if (!text) return conn.sendMessage(from, { text: `⚠️ ${lenguaje.sms.text7}\n• ${prefix + command} Recomienda un top 10 de películas de acción` }, { quoted: msg })
 try {
 await conn.sendPresenceUpdate('composing', m.chat)
 let syst = `Eres InfinityBot-MD, un gran modelo de lenguaje entrenado por OpenAI. Siga cuidadosamente las instrucciones del usuario. Responde usando Markdown.`
@@ -503,8 +514,10 @@ await m.reply(res.data)
 } catch (e) {
 console.log(e)}}}
 break
+
 case 'chatgpt2': case 'ia2': {
-if (!text) return conn.sendMessage(from, { text: `*INGRESE EL TEXTO DE LOS QUE QUIERE BUSCAR?*` }, { quoted: msg })   
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
+if (!text) return conn.sendMessage(from, { text: `⚠️ ${lenguaje.sms.text7}\n• ${prefix + command} Recomienda un top 10 de películas de acción` }, { quoted: msg })   
 await conn.sendPresenceUpdate('composing', m.chat) 
 let gpt = await fetch(`https://delirius-api-oficial.vercel.app/api/ia2?text=${text}`);
 let res = await gpt.json()
@@ -512,7 +525,8 @@ await m.reply(res.gpt)}
 break
 
 case 'gemini': {
-if (!text) return conn.sendMessage(from, { text: `*INGRESE EL TEXTO DE LOS QUE QUIERE BUSCAR?*` }, { quoted: msg })
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
+if (!text) return conn.sendMessage(from, { text: `⚠️ ${lenguaje.sms.text7}\n• ${prefix + command} Recomienda un top 10 de películas de acción` }, { quoted: msg })
 try {
 await conn.sendPresenceUpdate('composing', m.chat)
 let gpt = await fetch(global.API('fgmods', '/api/info/gemini', { text }, 'apikey'));
@@ -528,161 +542,25 @@ console.log(e)}}}
 break
 
 case 'copilot': case 'bing': {
-if (!text) return conn.sendMessage(from, { text: `*INGRESE EL TEXTO DE LOS QUE QUIERE BUSCAR?*` }, { quoted: msg })    
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
+if (!text) return conn.sendMessage(from, { text: `⚠️ ${lenguaje.sms.text7}\n• ${prefix + command} Recomienda un top 10 de películas de acción` }, { quoted: msg })    
 await conn.sendPresenceUpdate('composing', m.chat)
 let gpt = await fetch(`https://delirius-api-oficial.vercel.app/api/bingia?query=${text}`);
 let res = await gpt.json()
 await m.reply(res.message)}
 break
 
-case 'welcome': case 'antilink': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antilink2': case 'antitwiter':case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'AntiFacebook': case 'antifacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'antiviewonce': case 'antitoxic': case 'autodetect': case 'detect': { 
-if (!m.isGroup) return m.reply(info.group)
-if (!isBotAdmins) return m.reply(info.botAdmin)
-if (!isGroupAdmins) return m.reply(info.admin)
-if (!text) return m.reply(`⚠️ 𝐀𝐂𝐂𝐈𝐎́𝐍 𝐌𝐀𝐋 𝐔𝐒𝐀𝐃𝐀\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*`)
+case 'ss': case 'ssweb': {
+if (global.db.data.users[m.sender].registered < true) return reply(info.registra)
+if (!q) return reply(`*${lenguaje.sms.text}* ${prefix+command} link`)
+let krt = await scp1.ssweb(q)
+conn.sendMessage(from, {image:krt.result, caption: info.result}, {quoted:m})
+db.data.users[m.sender].limit -= 5
+m.reply('5 ' + info.limit)
+}
+break        
 
-if (/welcome/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].welcome = true
-m.reply(`❬ 🚩 ❭ La funcion ${command} esta habilitada en este grupo`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].welcome = false
-m.reply(`❬ 🚩 ❭ La funcion ${command} esta deshabilitada en este grupo`)}}
-
-if (/antilink/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].antilink = true
-m.reply(`Atención a todos los miembros activos de este grupo 📣\n\nEl antilink esta activo\n\nY solo los admins de este grupo podran pasar el enlace\n\nSi algun participante que no se admin envía un enlace de este grupo u otro grupo sera expulsado de este grupo de inmediato`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].antilink = false
-m.reply(`❬ 🚩 ❭ La funcion ${command} esta deshabilitada en este grupo`)}}
-
-if (/modoadmins|soloadmin|modoadmin/.test(command)) {
-if (args[0] === "on") { 
-global.db.data.chats[m.chat].modeadmin = true
-m.reply(`❬ 🚩 ❭ La funcion ${command} esta habilitada en este grupo`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].modeadmin = false
-m.reply(`❬ 🚩 ❭ La funcion ${command} esta deshabilitada en este grupo`)}}
-
-
-if (/antilink2/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].antiLink2 = true
-m.reply(lenguaje.enable.text3)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].antiLink2 = false
-m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
-
-if (/antitwiter|AntiTwiter/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].AntiTwitter = true
-m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].AntiTwitter = false
-m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
-
-if (/antitiktok|AntiTikTok/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].AntiTiktok = true
-m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].AntiTiktok = false
-m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
-
-if (/antitelegram|AntiTelegram/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].AntiTelegram = true
-m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].AntiTelegram = false
-m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
-
-if (/AntiFacebook|antifacebook/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].AntiFacebook = true
-m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].AntiFacebook = false
-m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
-
-if (/antinstagram|AntInstagram/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].AntInstagram = true
-m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].AntInstagram = false
-m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
-
-if (/antiyoutube|AntiYoutube/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].AntiYoutube = true
-m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].AntiYoutube = false
-m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
-
-if (/antifake|antiFake/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].antiFake = true
-m.reply(`*Atención a todos los miembros activos de este grupo 📣*\n\n*El ${command} esta activo*\n\n⚠️ *Los cual el grupo no esta permitido ingreso de numero fake (virtuales), seran explusado automáticamente del Grupo...*`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].antiFake = false
-m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
-
-if (/antiarabe|antiArabe/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].antiArabe = true
-m.reply(`*Atención a todos los miembros activos de este grupo 📣*\n\n*El ${command} esta activo*\n\n⚠️ *Los cual el grupo no esta permitido ingreso de numero arabe (+212, +91, +92, etc), seran explusado automáticamente del Grupo...*`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].antiArabe = false
-m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
-
-if (/antiviewonce/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].viewonce = true
-m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].viewonce = false
-m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
-
-if (/antitoxic/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].antitoxic = true
-m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].antitoxic = false
-m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
-
-if (/autodetect|detect/.test(command)) {
-if (args[0] === "on") {
-global.db.data.chats[m.chat].detect = true
-m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
-} else if (args[0] === "off") {
-global.db.data.chats[m.chat].detect = false
-m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}}
-break
-
-case 'antiprivado': case 'anticall': {
-if (!isCreator) return m.reply(info.owner)
-if (!text) return m.reply(`⚠️ 𝐀𝐂𝐂𝐈𝐎́𝐍 𝐌𝐀𝐋 𝐔𝐒𝐀𝐃𝐀\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*`)
-if (/antiprivado/.test(command)) {
-if (args[0] === "on") {
-global.db.data.settings[numBot].antiprivado = true
-m.reply(`❬ 🚩 ❭ La funcion ${command} esta habilitada en este grupo *${command}*`)
-} else if (args[0] === "off") {
-global.db.data.settings[numBot].antiprivado = false
-m.reply(`❬ 🚩 ❭ La funcion ${command} esta deshabilitada en este grupo`)}}
-
-if (/anticall/.test(command)) {
-if (args[0] === "on") {
-global.db.data.settings[numBot].anticall = true
-m.reply(`❬ 🚩 ❭ La funcion ${command} esta habilitada en este grupo *${command}*`)
-} else if (args[0] === "off") {
-global.db.data.settings[numBot].anticall = false
-m.reply(`❬ 🚩 ❭ La funcion ${command} esta deshabilitada en este grupo`)}}}
-break
-
+//Información
 case 'ping': 
 var timestamp = speed();  
 var latensi = speed() - timestamp
@@ -724,31 +602,31 @@ const totalMemory = Math.round(os.totalmem() / (1024 * 1024 * 1024))
 const freeMemory = Math.round(os.freemem() / (1024 * 1024 * 1024))
 const usedMemory = totalMemory - freeMemory
 const cpuUsage = os.loadavg()[0]                
-let respon = `      \`⧼⧼⧼ 🚀 ＶＥＬＯＣＩＤＡＤ ⧽⧽⧽\`
+let respon = `      \`⧼⧼⧼ ${lenguaje.sms.text8} ⧽⧽⧽\`
 > ${latensi.toFixed(4)} Seg
 > ${oldd - neww} _milisegundos_
                 
-\`✅ INFORMACIÓN DEL BOT\`               
-➢ 𝙰𝙲𝚃𝙸𝚅𝙸𝙳𝙰𝙳 : ${runtime(process.uptime())}
-➢ 𝙶𝚁𝚄𝙿𝙾𝚂 𝙱𝙰𝙽𝙴𝙰𝙳𝙾𝚂: ${Object.entries(global.db.data.chats).filter(chat => chat[1].isBanned).length}
-➢ 𝚄𝚂𝚄𝙰𝚁𝙸𝙾𝚂 𝙱𝙰𝙽𝙴𝙰𝙳𝙾𝚂: ${Object.entries(global.db.data.users).filter(user => user[1].banned).length}
-➢ 𝚄𝚂𝚄𝙰𝚁𝙸𝙾𝚂 𝚃𝙾𝚃𝙰𝙻𝙴𝚂: ${Object.keys(global.db.data.users).length}
+${lenguaje.sms.text9}          
+➢ ${lenguaje.sms.text10}: ${runtime(process.uptime())}
+➢ ${lenguaje.sms.text11}: ${Object.entries(global.db.data.chats).filter(chat => chat[1].isBanned).length}
+➢ ${lenguaje.sms.text12}: ${Object.entries(global.db.data.users).filter(user => user[1].banned).length}
+➢ ${lenguaje.sms.text13}: ${Object.keys(global.db.data.users).length}
 
-\`💻 INFO DE SERVIDOR\`
-➢ RAM: ${formatp(os.totalmem() - os.freemem())} / ${formatp(os.totalmem())}
-➢ 𝙿𝙻𝙰𝚃𝙰𝙵𝙾𝚁𝙼𝙰 : ${os.platform()}
-${lenguaje.info.text4} ${os.hostname()}
-${lenguaje.info.text5} ${cpuUsage.toFixed(2)}%
-${lenguaje.info.text6} ${totalMemory} GB
+${lenguaje.sms.text14}
+➢ ${lenguaje.sms.text15}: ${formatp(os.totalmem() - os.freemem())} / ${formatp(os.totalmem())}
+➢ ${lenguaje.sms.text16} : ${os.platform()}
+➢ ${lenguaje.sms.text17}: ${os.hostname()}
+➢ ${lenguaje.sms.text18}:  ${cpuUsage.toFixed(2)}%
+➢ ${lenguaje.sms.text19}: ${totalMemory} GB
 
-\`❐ Uso de memoria de NodeJS\`
+${lenguaje.sms.text20}
 ${Object.keys(used).map((key, _, arr) => `${key.padEnd(Math.max(...arr.map(v=>v.length)),' ')}: ${formatp(used[key])}`).join('\n')}
 
-${cpus[0] ? `\`❐ Uso total de CPU\`
+${cpus[0] ? `${lenguaje.sms.text21}
 ${cpus[0].model.trim()} (${cpu.speed} MHZ)\n${Object.keys(cpu.times).map(type => `- *${(type + '*').padEnd(6)}: ${(100 * cpu.times[type] / cpu.total).toFixed(2)}%`).join('\n')}
 _Uso de núcleo(s) de CPU (${cpus.length} CPU central)_
-${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Object.keys(cpu.times).map(type => `- *${(type + '*').padEnd(6)}: ${(100 * cpu.times[type] / cpu.total).toFixed(2)}%`).join('\n')}`).join('\n\n')}` : ''}`.trim()
-conn.sendFile(m.chat, imagen1, 'lp.jpg', respon, m, false, { contextInfo: { externalAdReply: {title: "𝘐𝘔𝘍𝘖𝘙𝘔𝘈𝘊𝘐𝘖𝘕 𝘈𝘊𝘌𝘙𝘊𝘈 𝘋𝘌𝘓 𝘉𝘖𝘛", body: "Click para entrar", sourceUrl: md, thumbnailUrl: imagen1 }}})}//`
+${cpus.map((cpu, i) => `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Object.keys(cpu.times).map(type => `- *${(type + '*').padEnd(6)}: ${(100 * cpu.times[type] / cpu.total).toFixed(2)}%`).join('\n')}`).join('\n\n')}` : ''}`.trim()//`
+conn.sendFile(m.chat, imagen1, 'lp.jpg', respon, m, false, { contextInfo: { externalAdReply: {title: "𝘐𝘔𝘍𝘖𝘙𝘔𝘈𝘊𝘐𝘖𝘕 𝘈𝘊𝘌𝘙𝘊𝘈 𝘋𝘌𝘓 𝘉𝘖𝘛", body: "Click para entrar", sourceUrl: md, thumbnailUrl: imagen1 }}})}
 break 
 
 case 'speedtest': case 'speed': {
@@ -774,48 +652,30 @@ return m.reply(o)
 console.log(e)}}
 break
 
+//Gestión del Grupo		
 case 'setrules': case 'addrules': case 'addrule': {
 let chat = global.db.data.chats[m.chat]
-if (!text) return m.reply(`⚠️ Escriba la regla del Grupo`)  
+if (!text) return m.reply(`${lenguaje.sms.text22}`)  
 chat.rules = text
 m.reply(`${lenguaje['exito']()}`)}
 break
 
 case 'reglas': case 'rule': case 'rules': {
 let chat = global.db.data.chats[m.chat]
-if (!chat.rules === '') m.reply(`*⚠️ Reglas de nuestro hosting:* 
-
-_*🔰 Servidores gratuitos:*_
-
-• No pueden vender ni comercializar ningún servidor gratuito nuestro.
-• Se brinda mantenimiento a nuestros sistemas, pero no siempre será perfecto. Los problemas con el servicio gratuito serán atendidos cuando sea posible. No se aceptan exigencias ni quejas.
-• No nos hacemos responsables de problemas con la configuración de su servidor.
-• No prometemos un tiempo de actividad del 100%. Sin embargo, estaremos pendientes para solucionar cualquier problema.
-• Cualquier servidor que utilice cantidades irrazonables o sin sentido de almacenamiento (cosas absurdas que no tengan relación con el servidor) puede ser eliminado.
-• No nos hacemos responsables por la pérdida de datos. Siempre recomendamos a nuestros usuarios hacer copias de seguridad.
-• En caso de que una máquina deje de funcionar, no proporcionamos ni tenemos copias de seguridad.
-• Cualquier servidor ubicado en la capa gratuita e inactivo durante 7 días o más podrá ser eliminado sin aviso previo y sin derecho a reclamaciones por parte del usuario.
-
-*👑 Servidores Premium:*
-
-• Soporte y Responsabilidad del Hosting: Brindamos soporte para cualquier problema relacionado con nuestro servicio de hosting. Sin embargo, no asumimos responsabilidad por la creación de servidores. Nos comprometemos a alojar su servidor de la mejor manera posible.
-• Pagos y Suspensión del Servicio: Si no realiza el pago de su servicio, este será suspendido. Para reactivarlo, deberá adquirir InyCoins a través de nuestro método de pago.
-• Devoluciones de Cargo y Transacciones Revertidas: Cualquier devolución de cargo o transacción revertida en sus pagos resultará en la cancelación inmediata de su cuenta. Esto conllevará a la prohibición del uso de nuestros servicios en el futuro, además de la pérdida del dinero involucrado.
-• Uso y Reventa de Servicios: Nuestros servicios no pueden revenderse ni comercializarse de ninguna manera, a menos que cuente con el plan de reventa, también conocido como reseller. En caso contrario, los servidores pueden suspenderse y/o eliminarse sin previo aviso.
-• Eliminación de Servidores no Pagados: Si el pago del servidor no se realiza después de 7 días de su suspensión, este puede ser eliminado sin previo aviso, lo que resultará en la pérdida de los datos asociados al servidor.`) 
+if (!chat.rules === '') m.reply(`*Sin reglas*`) 
 m.reply(`${chat.rules}`)}
 break		
-		
+
 case 'grupo':
 if (!m.isGroup) return reply(info.group);  
 if (!isBotAdmins) return reply(info.botAdmin)
 if (!isGroupAdmins) return reply(info.admin)
-if (!text) return reply(`*Accion mal usaba*\n\n*Use de esta forma:*\n*${prefix + command} abrir*\n*${prefix + command} cerrar*`)
+if (!text) return reply(`${lenguaje.sms.text23}\n*${prefix + command} abrir*\n*${prefix + command} cerrar*`)
   if (args[0] === 'abrir') {
-m.reply(`*GRUPO ABIERTO CON EXITO✅*`)
+m.reply(`${lenguaje.sms.text24}`)
 await conn.groupSettingUpdate(from, 'not_announcement')
 } else if (args[0] === 'cerrar') {
-m.reply(`*GRUPO CERRADO CON EXITO✅*`)
+m.reply(`${lenguaje.sms.text25}`)
 await conn.groupSettingUpdate(from, 'announcement')
 }
 break
@@ -823,7 +683,7 @@ break
 case 'delete': case 'del': {
 if (!m.quoted) throw false
 if (!isBotAdmins) return reply(info.botAdmin)
-if (!isGroupAdmins) return reply(info.admin)
+//if (!isGroupAdmins) return reply(info.admin)
 let { chat, fromMe, id} = m.quoted
 let delet = m.message.extendedTextMessage.contextInfo.participant
 let bang = m.message.extendedTextMessage.contextInfo.stanzaId
@@ -833,53 +693,66 @@ break
 case 'hidetag': case 'notificar': case 'tag': {
 if (!m.isGroup) return m.reply(info.group) 
 if (!isGroupAdmins) return m.reply(info.admin)
-if (!m.quoted && !text) return m.reply(lenguaje.grupos.text) 
+if (!m.quoted && !text) return m.reply(`*${lenguaje.sms.text26}*`) 
 try { 
 conn.sendMessage(m.chat, { forward: m.quoted.fakeObj, mentions: participants.map(a => a.id) })
 } catch {  
 conn.sendMessage(m.chat, { text : text ? text : '' , mentions: participants.map(a => a.id)}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}}
 break 
 
+case 'tagall': {
+if (!m.isGroup) return reply(info.group) 
+if (!isBotAdmins) return reply(info.botAdmin)
+if (!isGroupAdmins) return reply(info.admin)
+let teks = `❑ ━〔 *📢 𝙸𝙽𝚅𝙾𝙲𝙰𝙲𝙸𝙾𝙽 📢* 〕━ ❑\n\n`
+teks += `❑ 𝙼𝙴𝙽𝚂𝙰𝙹𝙴: ${q ? q : 'Sin mensaje'}\n\n`
+for (let mem of participants) {
+teks += `➥ @${mem.id.split('@')[0]}\n`
+}
+conn.sendMessage(m.chat, { text: teks, mentions: participants.map(a => a.id) }, { quoted: m })}
+break
+
 case 'setppname': case 'nuevonombre': case 'newnombre': {
 if (!m.isGroup) return reply(info.group) 
 if (!isBotAdmins) return reply(info.botAdmin)
 if (!isGroupAdmins) return reply(info.admin)
-if (!text) return reply('*⚠️ Ingresa el texto*')
+if (!text) return reply(`*${lenguaje.sms.text26}*`) 
 await conn.groupUpdateSubject(m.chat, text)
-await reply(`*✅El nombre del grupo se cambio correctamente*`)}
+}
 break
+
 case 'setdesc': case 'descripción': {
 if (!m.isGroup) return reply(info.group) 
 if (!isBotAdmins) return reply(info.botAdmin)
 if (!isGroupAdmins) return reply(info.admin)
-if (!text) return reply('*⚠️ Ingresa el texto*')
+if (!text) return reply(`${lenguaje.sms.text26}`) 
 await conn.groupUpdateDescription(m.chat, text)
-await reply(`*✅La descripción del grupo se cambio con éxito*`)}
+}
 break
+
 case 'setppgroup': case 'setpp': {
 if (!m.isGroup) return reply(info.group) 
 if (!isBotAdmins) return reply(info.botAdmin)
 if (!isGroupAdmins) return reply(info.admin)
-if (!quoted) return reply(`*⚠️Y la imagen?*`)
-if (!/image/.test(mime)) return reply(`*⚠️ Responde a una con:* ${prefix + command}`)
-if (/webp/.test(mime)) return reply(`*⚠️Responde a una  Image con :* ${prefix + command}`)
+if (!quoted) return reply(`*${lenguaje.sms.text27}*`)
+if (!/image/.test(mime)) return reply(`*${lenguaje.sms.text27}*`)
+if (/webp/.test(mime)) return reply(`*${lenguaje.sms.text27}*`)
 var mediz = await conn. downloadAndSaveMediaMessage(quoted, 'ppgc.jpeg')
 if (args[0] == `full`) {
 var { img } = await generateProfilePicture(mediz)
 await conn.query({tag: 'iq', attrs: {to: m.chat, type:'set', xmlns: 'w:profile:picture' }, content: [ {tag: 'picture', attrs: { type: 'image' }, content: img } ]}) 
 fs.unlinkSync(mediz)
-reply(`*✅Exito*`)
 } else {
 var memeg = await conn.updateProfilePicture(m.chat, { url: mediz })
 fs.unlinkSync(mediz)
-reply(`*✅Exito*`)}}
+}}
 break
 
 case 'kick': {
 if (!m.isGroup) return m.reply(info.group) 
 if (!isBotAdmins) return m.reply(info.botAdmin)
 if (!isGroupAdmins) return m.reply(info.admin)
-const kicktext = `${lenguaje.grupos.text16}`;
+const kicktext = `Etiqueta a alguien boludo`;
 if (!m.mentionedJid[0] && !m.quoted) return m.reply(kicktext, m.chat, {mentions: conn.parseMention(kicktext)});
 if (m.mentionedJid.includes(conn.user.jid)) return;
 const user = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted.sender;
@@ -912,32 +785,10 @@ await conn.groupParticipantsUpdate(m.chat, [users], 'demote').then((res) => repl
 }
 break
 	
-case 'tagall': {
-if (!m.isGroup) return reply(info.group) 
-if (!isBotAdmins) return reply(info.botAdmin)
-if (!isGroupAdmins) return reply(info.admin)
-let teks = `❑ ━〔 *📢 𝙸𝙽𝚅𝙾𝙲𝙰𝙲𝙸𝙾𝙽 📢* 〕━ ❑\n\n`
-teks += `❑ 𝙼𝙴𝙽𝚂𝙰𝙹𝙴: ${q ? q : 'Sin mensaje'}\n\n`
-for (let mem of participants) {
-teks += `➥ @${mem.id.split('@')[0]}\n`
-}
-conn.sendMessage(m.chat, { text: teks, mentions: participants.map(a => a.id) }, { quoted: m })}
-break
-
-case 'mensajeoficial': case 'comunica': {
-const nna = 'GQ82mPnSYnm0XL2hLPk7FV'
-//let users = m.sender.split`@`[0]
-///let [_, code] = grupo.match(linkRegex) || []
-if (!isCreator) return reply(info.owner)
-if (!text) return m.reply(`*Falta Texto*`) 
-//let res = await conn.groupAcceptInvite('GQ82mPnSYnm0XL2hLPk7FV')
-await conn.sendMessage(`120363198303211124@g.us`, { text: text, mentions: participants.map(a => a.id) }, { quoted: fkontak })
-await m.reply(`✅ *MENSAJE ENVIADO CON ÉXITO* `)}
-break 
-	
+//Descarga
 case 'play': {
 if (global.db.data.users[m.sender].registered < true) return reply(info.registra)
-if (!text) return conn.sendMessage(from, { text: `*🚩 Ingrese el nombre del algunas cancion*` }, { quoted: msg })
+if (!text) return conn.sendMessage(from, { text: `*🚩 ${lenguaje.sms.text}*\n${prefix + command} ozuna` }, { quoted: msg })
 let yts = require("youtube-yts")
 let search = await yts(text)
 let anup3k = search.videos[0]
@@ -950,18 +801,25 @@ ${anu.title}
 const playmp3 = require('./libs/ytdl2')
 const pl= await playmp3.mp3(anup3k.url)
 await conn.sendMessage(from, { audio: fs.readFileSync(pl.path), fileName: `error.mp3`, mimetype: 'audio/mp4' }, { quoted: m }); 
-await fs.unlinkSync(pl.path)}
+await fs.unlinkSync(pl.path)
+db.data.users[m.sender].limit -= 5
+m.reply('5 ' + info.limit)
+}
 break
 
 case 'play2': {
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 let yts = require("youtube-yts")
-if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
+if (!text) return m.reply(`*🚩 ${lenguaje.sms.text}*\n${prefix + command} ozuna`) 
 m.react(rwait) 
 let vid = (await yts(text)).all[0]
 const yt_play = await search(args.join(" "))
 let { title, description, url, thumbnail, videoId, timestamp, views, published } = vid
 //let message = await 
-conn.sendMessage(from, { image : thumbnail, caption:  ` *⌜Cancion Encontrada ✅⌟*\n◉ *Título:* ${yt_play[0].title}\n◉ *Duración:* ${secondString(yt_play[0].duration.seconds)}\n◉ *Publicado:*  ${yt_play[0].ago}\n\n*ESPERE ENVIANDO SU ARCHIVO MP3 ⚠*` }, { quoted: m}) 
+conn.sendMessage(from, { image : thumbnail, caption:  `↻ ◁ II ▷ ↺
+${yt_play[0].title}
+
+ᴠᴏʟᴜᴍᴇ : ▮▮▮▮▮▮▯▯▯` }, { quoted: m})
 try { 
 const qu = '360';
 const q = qu + 'p';
@@ -970,8 +828,10 @@ const yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v));
 const dl_url = await yt.video[q].download();
 const ttl = await yt.title;
 const size = await yt.video[q].fileSizeH;
-await await conn.sendMessage(m.chat, {video: {url: dl_url}, fileName: `${ttl}.mp4`, mimetype: 'video/mp4', caption: `${lenguaje.descargar.text4}\n🔰 ${lenguaje.descargar.title} ${ttl}`, thumbnail: await fetch(yt.thumbnail)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
+await await conn.sendMessage(m.chat, {video: {url: dl_url}, fileName: `${ttl}.mp4`, mimetype: 'video/mp4', caption: `${ttl}`, thumbnail: await fetch(yt.thumbnail)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
 m.react(done) 
+db.data.users[m.sender].limit -= 5
+m.reply('5 ' + info.limit)
 } catch {
 try {
 let chat = global.db.data.chats[m.chat]
@@ -985,6 +845,8 @@ let yt = await (isVideo ? fg.ytv : fg.yta)(vid.url, q)
 let { title, dl_url, quality, size, sizeB } = yt
 let isLimit = limit * 1024 < sizeB 
 if (!isLimit) conn.sendMessage(m.chat, { video: { url: dl_url }, mimetype: 'video/mp4', asDocument: chat.useDocument }, { quoted: m})
+db.data.users[m.sender].limit -= 3
+m.reply('3 ' + info.limit)
 m.react(done)
 } catch {
 try {
@@ -998,8 +860,10 @@ const n = lolh.result.title || 'error';
 const n2 = lolh.result.link;
 const n3 = lolh.result.size;
 const n4 = lolh.result.thumbnail;
-await conn.sendMessage(m.chat, {video: {url: n2}, fileName: `${n}.mp4`, mimetype: 'video/mp4', caption: `${lenguaje.descargar.text4}\n🔰 ${lenguaje.descargar.title} ${n}`, thumbnail: await fetch(n4)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
+await conn.sendMessage(m.chat, {video: {url: n2}, fileName: `${n}.mp4`, mimetype: 'video/mp4', caption: `${n}`, thumbnail: await fetch(n4)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
 m.react(done) 
+db.data.users[m.sender].limit -= 5
+m.reply('5 ' + info.limit)
 } catch (e) {
 m.react(error) 
 return m.reply(info.error) 
@@ -1007,13 +871,14 @@ console.log(e)}}}}}
 break
 
 case 'play3': case 'playdoc': case 'ytmp3doc': { 
-if (!text) return m.reply(lenguaje.descargar.text1 + `\n• *${prefix + command}* ozuna\n• ${prefix + command} https://youtu.be/7ouFkoU8Ap8?si=Bvm3LypvU_uGv0bw`) 
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
+if (!text) return m.reply(`*${lenguaje.sms.text}*\n*${prefix + command}* ozuna\n*${prefix + command}* https://youtu.be/7ouFkoU8Ap8?si=Bvm3LypvU_uGv0bw`) 
 try { 
 m.react(rwait) 
 let vid = (await yts(text)).all[0]
 const yt_play = await search(args.join(" "))
 let { title, description, url, thumbnail, videoId, timestamp, views, published } = vid
-let message = await conn.sendMessage(m.chat, { text: `${lenguaje.descargar.text5}\n◉ ${lenguaje.descargar.title} ${yt_play[0].title}\n◉ ${lenguaje.descargar.ago} ${yt_play[0].ago}\n◉ ${lenguaje.descargar.duracion} ${secondString(yt_play[0].duration.seconds)}\n◉ ${lenguaje.descargar.autor} ${yt_play[0].author.name}\n◉ ${lenguaje.descargar.views} ${MilesNumber(yt_play[0].views)}\n◉ *Link:* ${yt_play[0].url}\n\n${lenguaje.descargar.text6}`, contextInfo: { externalAdReply: { title: wm, body: yt_play[0].title.replace(/\*/g, ''), thumbnailUrl: thumbnail, sourceUrl: yt_play[0].url, mediaType: 1, showAdAttribution: false, renderLargerThumbnail: true }}}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}) 
+m.reply(`*Descarga sus audio ${yt_play[0].title} en documentos espere un momento....*`) 
 const q = '128kbps';
 const v = yt_play[0].url;
 const yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v));
@@ -1022,6 +887,8 @@ const ttl = await yt.title;
 const size = await yt.audio[q].fileSizeH;
 await conn.sendMessage(m.chat, {document: {url: dl_url}, mimetype: 'audio/mpeg', fileName: `${ttl}.mp3`}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
 m.react(done) 
+db.data.users[m.sender].limit -= 3
+m.reply('3 ' + info.limit)
 } catch {
 try {
 const lolhuman = await fetch(`https://api.lolhuman.xyz/api/ytaudio2?apikey=${lolkeysapi}&url=${yt_play[0].url}`);
@@ -1029,6 +896,8 @@ const lolh = await lolhuman.json();
 const n = lolh.result.title || 'error';
 await conn.sendMessage(m.chat, {document: {url: lolh.result.link}, fileName: `${n}.mp3`, mimetype: 'audio/mpeg'}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
 m.react(done) 
+db.data.users[m.sender].limit -= 3
+m.reply('3 ' + info.limit)
 } catch {
 try {
 const searchh = await yts(yt_play[0].url);
@@ -1037,6 +906,8 @@ const infoo = await ytdl.getInfo('https://youtu.be/' + __res[0].videoId);
 const ress = await ytdl.chooseFormat(infoo.formats, {filter: 'audioonly'});
 conn.sendMessage(m.chat, {audio: {url: ress.url}, fileName: __res[0].title + '.mp3', mimetype: 'audio/mp4'}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
 m.react(done) 
+db.data.users[m.sender].limit -= 3
+m.reply('3 ' + info.limit)
 } catch (e) {
 m.react(error) 
 return m.reply(info.error) 
@@ -1044,24 +915,29 @@ console.log(e)}}}}
 break
 
 case 'play4': case 'playdoc2': case 'ytmp4doc': {
-if (!text) return m.reply(lenguaje.descargar.text1 + `\n• *${prefix + command}* ozuna\n• ${prefix + command} https://youtu.be/7ouFkoU8Ap8?si=Bvm3LypvU_uGv0bw`) 
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
+if (!text) return m.reply(`${lenguaje.sms.text}\n*${prefix + command}* ozuna\n*${prefix + command}* https://youtu.be/7ouFkoU8Ap8?si=Bvm3LypvU_uGv0bw`) 
 m.react(rwait) 
 let vid = (await yts(text)).all[0]
 const yt_play = await search(args.join(" "))
 let { title, description, url, thumbnail, videoId, timestamp, views, published } = vid
-let message = await conn.sendMessage(m.chat, { text: `${lenguaje.descargar.text3}\n◉ ${lenguaje.descargar.title} ${yt_play[0].title}\n◉ ${lenguaje.descargar.ago} ${yt_play[0].ago}\n◉ ${lenguaje.descargar.duracion} ${secondString(yt_play[0].duration.seconds)}\n◉ ${lenguaje.descargar.autor} ${yt_play[0].author.name}\n◉ ${lenguaje.descargar.views} ${MilesNumber(yt_play[0].views)}\n◉ *Link:* ${yt_play[0].url}\n\n${lenguaje.descargar.text7}`, contextInfo: { externalAdReply: { title: wm, body: yt_play[0].title.replace(/\*/g, ''), thumbnailUrl: thumbnail, sourceUrl: yt_play[0].url, mediaType: 1, showAdAttribution: false, renderLargerThumbnail: true }}}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}) 
+m.reply(`*Descarga sus video ${yt_play[0].title} en documentos espere un momento....*`) 
  let q = args[1] || '360p'
 try {  
 const yt = await fg.ytv(args[0], q)
 let { title, dl_url, quality, size, sizeB } = yt
- conn.sendMessage(m.chat, {document: {url: dl_url}, fileName: `${ttl}.mp4`, mimetype: 'video/mp4', caption: `*╭┄〔 📥 𝐘𝐎𝐔𝐓𝐔𝐁𝐄 𝐃𝐋 📥 〕┄⊱-*\n┆🔸️ ${lenguaje.lengua.titulo} ${title}\n┆🔸️ ${lenguaje.lengua.Peso} ${size}\n╰─────────────────`, thumbnail: await fetch(yt.thumbnail)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
+ conn.sendMessage(m.chat, {document: {url: dl_url}, fileName: `${ttl}.mp4`, mimetype: 'video/mp4', caption: `${title}`, thumbnail: await fetch(yt.thumbnail)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
 m.react(done) 
+db.data.users[m.sender].limit -= 3
+m.reply('3 ' + info.limit)
 } catch {
 try {
 let yt = await fg.ytmp4(args[0], q)
 let { title, size, sizeB, dl_url, quality } = yt
-conn.sendMessage(m.chat, {document: {url: dl_url}, fileName: `${ttl}.mp4`, mimetype: 'video/mp4', caption: `*╭┄〔 📥 𝐘𝐎𝐔𝐓𝐔𝐁𝐄 𝐃𝐋 📥 〕┄⊱-*\n┆🔸️ ${lenguaje.lengua.titulo} ${title}\n┆🔸️ ${lenguaje.lengua.Peso} ${size}\n╰─────────────────`, thumbnail: await fetch(yt.thumbnail)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
+conn.sendMessage(m.chat, {document: {url: dl_url}, fileName: `${ttl}.mp4`, mimetype: 'video/mp4', caption: `${title}`, thumbnail: await fetch(yt.thumbnail)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
 m.react(done)	
+db.data.users[m.sender].limit -= 3
+m.reply('3 ' + info.limit)
 } catch {
 try {		
 const qu = '360';
@@ -1071,8 +947,10 @@ const yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v));
 const dl_url = await yt.video[q].download();
 const ttl = await yt.title;
 const size = await yt.video[q].fileSizeH;
-await await conn.sendMessage(m.chat, {document: {url: dl_url}, fileName: `${ttl}.mp4`, mimetype: 'video/mp4', caption: `*╭┄〔 📥 𝐘𝐎𝐔𝐓𝐔𝐁𝐄 𝐃𝐋 📥 〕┄⊱-*\n┆🔸️ ${lenguaje.lengua.titulo} ${ttl}\n┆🔸️ ${lenguaje.lengua.Peso} ${size}\n╰─────────────────`, thumbnail: await fetch(yt.thumbnail)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
+await await conn.sendMessage(m.chat, {document: {url: dl_url}, fileName: `${ttl}.mp4`, mimetype: 'video/mp4', caption: `${ttl}`, thumbnail: await fetch(yt.thumbnail)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
 m.react(done) 
+db.data.users[m.sender].limit -= 3
+m.reply('3 ' + info.limit)
 } catch {
 try {
 const mediaa = await ytMp4(yt_play[0].url);
@@ -1085,8 +963,10 @@ const n = lolh.result.title || 'error';
 const n2 = lolh.result.link;
 const n3 = lolh.result.size;
 const n4 = lolh.result.thumbnail;
-await conn.sendMessage(m.chat, {document: {url: n2}, fileName: `${n}.mp4`, mimetype: 'video/mp4', caption: `*╭┄〔 📥 𝐘𝐎𝐔𝐓𝐔𝐁𝐄 𝐃𝐋 📥 〕┄⊱-*\n┆🔸 ${lenguaje.lengua.titulo} ${n}\n┆🔸️${lenguaje.lengua.Peso} ${n3}\n╰─────────────────`, thumbnail: await fetch(n4)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
+await conn.sendMessage(m.chat, {document: {url: n2}, fileName: `${n}.mp4`, mimetype: 'video/mp4', caption: `${n}`, thumbnail: await fetch(n4)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
 m.react(done) 
+db.data.users[m.sender].limit -= 3
+m.reply('3 ' + info.limit)
 } catch (e) {
 m.react(error) 
 return m.reply(info.error) 
@@ -1094,9 +974,10 @@ console.log(e)}}}}}}
 break
 
 case "ytmp3": case "ytaudio": 
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 const mp = require('./libs/ytdl2')
-if (args.length < 1 || !isUrl(text) || !mp.isYTUrl(text)) return reply(`*Ejemplo:*\n${prefix + command} https://youtu.be/7ouFkoU8Ap8?si=Bvm3LypvU_uGv0bw`)
-m.reply(`Calma ✋🥸🤚\n\n*Estoy descargando tu audio 🔄*\n\nAguarde un momento, por favor`) 
+if (args.length < 1 || !isUrl(text) || !mp.isYTUrl(text)) return reply(`*${lenguaje.sms.text}*\n${prefix + command} https://youtu.be/7ouFkoU8Ap8?si=Bvm3LypvU_uGv0bw`)
+m.react("🕕") 
 let mediaa = await ytplayvid(text)
 const audio = await mp.mp3(text)
 await conn.sendMessage(from, {audio: fs.readFileSync(audio.path), mimetype: 'audio/mp4',
@@ -1109,130 +990,147 @@ mediaType:2,
 mediaUrl:text,
 }}}, {quoted:m})
 await fs.unlinkSync(audio.path)
+m.react("✅") 
+db.data.users[m.sender].limit -= 5
+m.reply('5 ' + info.limit)
 break
 case 'ytmp4': case 'ytvideo': {
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 const mp = require('./libs/ytdl2')
-if (args.length < 1 || !isUrl(text) || !mp.isYTUrl(text)) return reply(`*Que esta buscado?*\n\n*Ejemplo:*\n${prefix + command} https://youtu.be/7ouFkoU8Ap8?si=Bvm3LypvU_uGv0bw`)
-m.reply(`Calma ✋🥸🤚\n\n*Estoy descargando tu video 🔄*\n\nAguarde un momento, por favor`) 
+if (args.length < 1 || !isUrl(text) || !mp.isYTUrl(text)) return reply(`*${lenguaje.sms.text}*\n${prefix + command} https://youtu.be/7ouFkoU8Ap8?si=Bvm3LypvU_uGv0bw`)
+m.react("🕕") 
 const vid = await mp.mp4(text)
 const ytc = `*${vid.title}*`
-await conn.sendMessage(from, {video: {url : vid.videoUrl}, caption: ytc }, {quoted:m})}
+await conn.sendMessage(from, {video: {url : vid.videoUrl}, caption: ytc }, {quoted:m})
+m.react("✅") 
+db.data.users[m.sender].limit -= 5
+m.reply('5 ' + info.limit)
+}
 break   
 
 case 'git': case 'gitclone':
-if (!args[0]) return reply(`*Ejemplo :*\n${prefix + command} ${md}`)
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
+if (!args[0]) return reply(`*${lenguaje.sms.text}*\n${prefix + command} ${md}`)
 if (!isUrl(args[0]) && !args[0].includes('github.com')) return reply(`Link invalido!!`)
+m.react("🕕") 
 let regex1 = /(?:https|git)(?::\/\/|@)github\.com[\/:]([^\/:]+)\/(.+)/i
 let [, user, repo] = args[0].match(regex1) || []
 repo = repo.replace(/.git$/, '')
 let url = `https://api.github.com/repos/${user}/${repo}/zipball`
 let filename = (await fetch(url, {method: 'HEAD'})).headers.get('content-disposition').match(/attachment; filename=(.*)/)[1]
-conn.sendMessage(m.chat, { document: { url: url }, fileName: filename+'.zip', mimetype: 'application/zip' }, { quoted: m }).catch((err) => reply(info.error))
+conn.sendMessage(m.chat, { document: { url: url }, fileName: filename+'.zip', mimetype: 'application/zip' }, { quoted: m }).catch((err) => reply(info.error)
+db.data.users[m.sender].limit -= 10
+m.reply('10 ' + info.limit)
+m.react("✅") 
 break
 
 case 'tiktok': {
-if (!text) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} https://vm.tiktok.com/ZMjdrFCtg/`)
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
+if (!text) return m.reply(`${lenguaje.sms.text}\n${prefix + command} https://vm.tiktok.com/ZMjdrFCtg/`)
 if (!isUrl(args[0]) && !args[0].includes('tiktok')) return m.reply(`Link invalido!!`)
 try {
+m.react("🕕") 
 require('./libs/tiktok').Tiktok(args).then( data => {
 conn.sendMessage(m.chat, { video: { url: data.nowm }}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})})
+m.react("✅") 
+db.data.users[m.sender].limit -= 5
+m.reply('5 ' + info.limit)
 } catch {
 m.reply(info.error)}}
 break
 case 'tiktokimg': {
-if (!text) return m.reply(`${lenguaje.lengua.espere}\n${prefix + command} https://vm.tiktok.com/ZMjnPvJuF/`) 
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
+if (!text) return m.reply(`*${lenguaje.sms.text}*\n${prefix + command} https://vm.tiktok.com/ZMjnPvJuF/`) 
 m.react("📥") 
 let imagesSent
 if (imagesSent) return;
 imagesSent = true    
 try {   
-conn.fakeReply(m.chat, `${lenguaje.lengua.espere}`, '0@s.whatsapp.net', 'No haga spam')
 let tioShadow = await ttimg(text); 
 let result = tioShadow?.data;
 for (let d of result) {
 await conn.sendMessage(m.chat, {image: {url: d}}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})};
 imagesSent = false
+db.data.users[m.sender].limit -= 5
+m.reply('5 ' + info.limit)
 } catch (e) {
 imagesSent = false    
 return m.reply(`${info.error}\n\n${e}`)}}
 break
 
 case 'mediafire': { 
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 const { mediafireDl } = require('./libs/mediafire.js') 
-if (!text) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} https://www.mediafire.com/file/admrdma1ff3cq10/Siete-Ocho.zip/file`) 
-m.react("📥") 
+if (!text) return m.reply(`${lenguaje.sms.text}\n${prefix + command} https://www.mediafire.com/file/admrdma1ff3cq10/Siete-Ocho.zip/file`) 
+m.react("🕕") 
 const baby1 = await mediafireDl(text)
 if (baby1[0].size.split('MB')[0] >= 1500) return reply(lenguaje.descargar.text15 + util.format(baby1))
-const result4 = `╭━─━─━─≪💎≫─━─━─━╮
-┆      *MEDIAFIRE*  
-┆——————«•»——————
-┆🔸️ ${lenguaje.descargar.text12} ${baby1[0].nama} 
-┆——————«•»——————
-┆🔸️ ${lenguaje.descargar.text13} ${baby1[0].size} 
-┆——————«•»——————
-┆🔸️ ${lenguaje.descargar.text14} ${baby1[0].mime}
-╰━─━─━─≪💎≫─━─━─━╯\n\n${lenguaje.descargar.descargado}` 
-m.reply(`${result4}`) 
-conn.sendMessage(m.chat, { document: { url: baby1[0].link}, caption: baby1[0].nama}, {quoted: m})}
+conn.sendMessage(m.chat, { document: { url: baby1[0].link}, caption: baby1[0].nama}, {quoted: m})
+m.react("✅") 
+db.data.users[m.sender].limit -= 15
+m.reply('15 ' + info.limit)
+}
 break
 
 case 'instagram': {
-if (!text) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} https://www.instagram.com/p/CCoI4DQBGVQ/?igshid=YmMyMTA2M2Y=`)
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
+if (!text) return m.reply(`*${lenguaje.sms.text}*\n${prefix + command} https://www.instagram.com/p/CCoI4DQBGVQ/?igshid=YmMyMTA2M2Y=`)
 m.react("📥") 
-conn.fakeReply(m.chat, `${lenguaje.lengua.espere}`, '0@s.whatsapp.net', 'No haga spam')
 let res = await fetch(`https://vihangayt.me/download/instagram?url=${text}`)
 let json = await res.json()
 const shortUrl1 = await (await fetch(`https://tinyurl.com/api-create.php?url=${args[0]}`)).text();
-conn.sendMessage(m.chat, { video: { url: json.data.data[0].url }, caption: `🔗 *Url:* ${shortUrl1}`}, {quoted: m})
-.catch(console.error)}
+conn.sendMessage(m.chat, { video: { url: json.data.data[0].url }, caption: `${shortUrl1}`}, {quoted: m})
+.catch(console.error)
+db.data.users[m.sender].limit -= 10
+m.reply('10 ' + info.limit)}
 break
 
 case 'apk': {
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 let { search, download } = require('aptoide-scraper')
-if (!text) return m.reply(lenguaje.descargar.text24)
+if (!text) return m.reply(`*${lenguaje.sms.text}*\n${prefix + command} whatsapp`)
 try {     
 let searchA = await search(text); 
 let data5 = await download(searchA[0].id); 
-let response = `╭━─━─━─≪≫─━─━─━╮\n│ ≡ ${lenguaje.descargar.text25} ≡\n│——————«•»——————\n│🔸📌 ${lenguaje.descargar.text12} ${data5.name}\n│🔸📦 *Package:* ${data5.package}\n│🔸🕒 ${lenguaje.descargar.text26} ${data5.lastup}\n│🔸📥 ${lenguaje.descargar.text27} ${data5.size}\n╰━─━─━─≪≫─━─━─━╯` 
-await conn.sendMessage(m.chat, {image: {url: data5.icon}, caption: response}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}); 
+await m.reply(`*Descargado sus apk:* ${data5.name}\n\nᴱˢᵖᵉʳᵉ ᵘⁿ ᵐᵒᵐᵉⁿᵗᵒ`) 
 if (data5.size.includes('GB') || data5.size.replace(' MB', '') > 999) { 
-return await m.reply(lenguaje.descargar.text28)}
+return 
+}
 await conn.sendMessage(m.chat, {document: {url: data5.dllink}, mimetype: 'application/vnd.android.package-archive', fileName: data5.name + '.apk', caption: null}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}); 
+db.data.users[m.sender].limit -= 16
+m.reply('16 ' + info.limit)
 } catch { 
 return m.reply(info.error)}}
 break
 
 case 'twiter': case 'x': {
-if (!args[0]) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} https://twitter.com/fernandavasro/status/1569741835555291139?t=ADxk8P3Z3prq8USIZUqXCg&s=19`) 
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
+if (!args[0]) return m.reply(`${lenguaje.sms.text}\n${prefix + command} https://twitter.com/fernandavasro/status/1569741835555291139?t=ADxk8P3Z3prq8USIZUqXCg&s=19`) 
 m.react(rwait)          
 try {
 let { SD, HD, desc, thumb, audio } = await fg.twitter(args[0])
 conn.sendFile(m.chat, HD, 'twitter.mp4', `•─≪ *TWITTER DL* ≫─•\n\n${desc}`, m)
 m.react(done)
+db.data.users[m.sender].limit -= 10
+m.reply('10 ' + info.limit)
 } catch (e) {
 m.reply(info.error) 
 console.log(e)}}
 break
 
-case 'ss': case 'ssweb': {
-if (global.db.data.users[m.sender].registered < true) return reply(info.registra)
-if (!q) return reply(`*Ejemplo:* ${prefix+command} link`)
-let krt = await scp1.ssweb(q)
-conn.sendMessage(from, {image:krt.result, caption: info.result}, {quoted:m})}
-break        
-
-case 'reg': case 'daftar': {
+//Rpg 
+case 'reg': case 'daftar': { 
 let Reg = /\|?(.*)([.|] *?)([0-9]*)$/i
 let user = global.db.data.users[m.sender]
-if (user.registered === true) return reply(`*Hey tu ya esta registrado 🤓*`) 
-if (!Reg.test(text)) return reply(`*Incorrecto ❎*\n\n> El comando de registo es\n> Comando: ${prefix}reg name.edad`) 
+if (user.registered === true) return reply(`${lenguaje.sms.text28}`) 
+if (!Reg.test(text)) return reply(`${lenguaje.sms.text29} ${prefix}reg name.edad`) 
 let [_, name, splitter, age] = text.match(Reg)
-if (!name) return reply('🚩 Ingresa el nombre') 
-if (!age) return reply('🚩 Ingresa la edad acontinuación') 
+if (!name) return reply(`${lenguaje.sms.text29} ${prefix}reg name.edad`) 
+if (!age) return reply(`${lenguaje.sms.text29} ${prefix}reg name.edad`)  
 age = parseInt(age)
 if (age > 100) return reply('USTED ES MUY MAYOR') 
 if (age < 5) return reply('USTED ES MUY MENOR') 
-if (name.length >= 30) return reply('ESCRIBA UN NOMBRE MÁS CORTO') 
+if (name.length >= 30) return reply('Name largo ') 
 user.name = name.trim()
 user.age = age
 user.regTime = + new Date
@@ -1243,14 +1141,67 @@ const date = moment.tz('America/Bogota').format('DD/MM/YYYY')
 const time = moment.tz('America/Bogota').format('HH:mm:ss')
 global.db.data.users[m.sender].limit += 4
 global.db.data.users[m.sender].exp += 200
-conn.sendMessage(from, { text: `┏━━『 V E R I F I C A C I O N 』━•
-┃• NOMBRE: ${name}
-┃• EDAD: ${age}
-┃• FECHA: ${date}
-┃• NÚMERO: wa.me/${sender.split("@")[0]}
-┗•` }, { quoted: fkontak })}
+conn.sendMessage(from, { text: `┏━━『 ${lenguaje.sms.text30} 』━•
+┃• ${lenguaje.sms.text31}: ${name}
+┃• ${lenguaje.sms.text32}: ${age}
+┃• ${lenguaje.sms.text33}: ${date}
+┃• ${lenguaje.sms.text34}: wa.me/${sender.split("@")[0]}
+┗•
+
+> ${lenguaje.sms.text35} #idioma` }, { quoted: fkontak })}
 break            
 
+//idiomas 
+case 'idioma': case 'Language': case 'idiomas': { 
+let user = global.db.data.users[m.sender]
+if (!text) return m.reply(lenguaje.AvisoMG() + lenguaje.idioma(prefix)) 
+try { 
+if (budy.includes(`1`)) {  
+idioma = 'es' 
+idiomas = 'español'
+}
+if (budy.includes(`2`)) {
+idioma = 'en'
+idiomas = 'ingles' 
+}
+if (budy.includes(`3`)) {
+idioma = 'ar'
+idiomas = 'arabe' 
+}
+if (budy.includes(`4`)) { 
+idioma = 'id'
+idiomas = 'indonesio'
+}
+if (budy.includes(`5`)) {  
+idioma = 'pt'
+idiomas = 'portugues'
+} 
+if (budy.includes(`6`)) {
+idioma = 'rs' 
+idiomas = 'ruso' 
+} 
+user.Language = idioma
+m.reply(lenguaje.idioma2() + idiomas)
+} catch (e) {
+m.reply(lenguaje.AvisoMG() + lenguaje.idioma(prefix))}}
+break  
+
+case 'claim': { //obtener recompensa 
+const user = global.db.data.users[m.sender];
+const cooldownTime =  22 * 60 * 60 * 1000;  // 22 hora
+const lastUsage = user.lastmiming || 0;
+const currentTime = Date.now();
+if (currentTime - lastUsage < cooldownTime) {
+const remainingTime = cooldownTime - (currentTime - lastUsage);
+return m.reply(`${lenguaje.sms.text36} ${msToTime(remainingTime)}`)}
+const coins = Math.floor(Math.random() * 60);
+user.limit = (user.limit || 0) + coins; //puede ser limit, coins, exp, o los que mas te gusten :v
+user.lastmiming = currentTime;
+m.reply(`*Genial, obtuviste ${coins} Coins!*`);
+}	
+break
+
+//Stickers
 case 's': case 'sticker': {
 const d = new Date(new Date + 3600000);
 const locale = 'es-ES';
@@ -1291,15 +1242,183 @@ isForwarded: true, externalAdReply:{ showAdAttribution: false, title: botname, m
 await new Promise((resolve) => setTimeout(resolve, 2000));
 await fs.unlinkSync(encmedia)  
 } else {  
-m.reply(lenguaje.sticker.text2)}}
+m.reply(`*Y la imagen?*`)}}
 break
 				
 case 'attp':
-if (!text) return reply('ingresa algo para convertirlo a sticker :v')
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
+if (!text) return reply(`${lenguaje.sms.text27}`)
 link = `https://api.lolhuman.xyz/api/attp?apikey=${lolkeysapi}&text=${text}`
 conn.sendMessage(m.chat, { sticker: { url: link } }, { quoted: fkontak})
+db.data.users[m.sender].limit -= 3
+m.reply('3 ' + info.limit)
 break
-				
+	
+//configuración para activar/desactivar los comando ser usar como este ejemplo: #welcome on (activo) 
+//#welcome off (apagado) 
+case 'welcome': case 'antilink': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antilink2': case 'antitwiter':case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'AntiFacebook': case 'antifacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'antiviewonce': case 'antitoxic': case 'autodetect': case 'detect': { 
+if (!m.isGroup) return m.reply(info.group)
+if (!isBotAdmins) return m.reply(info.botAdmin)
+if (!isGroupAdmins) return m.reply(info.admin)
+if (!text) return m.reply(`${lenguaje.sms.text37}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*`)
+
+if (/welcome/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].welcome = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].welcome = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/antilink/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].antilink = true
+m.reply(`${lenguaje.sms.text40}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].antilink = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/modoadmins|soloadmin|modoadmin/.test(command)) {
+if (args[0] === "on") { 
+global.db.data.chats[m.chat].modeadmin = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].modeadmin = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+
+if (/antilink2/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].antiLink2 = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].antiLink2 = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/antitwiter|AntiTwiter/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].AntiTwitter = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].AntiTwitter = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/antitiktok|AntiTikTok/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].AntiTiktok = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].AntiTiktok = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/antitelegram|AntiTelegram/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].AntiTelegram = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].AntiTelegram = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/AntiFacebook|antifacebook/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].AntiFacebook = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].AntiFacebook = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/antinstagram|AntInstagram/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].AntInstagram = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].AntInstagram = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/antiyoutube|AntiYoutube/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].AntiYoutube = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].AntiYoutube = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/antifake|antiFake/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].antiFake = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].antiFake = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/antiarabe|antiArabe/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].antiArabe = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].antiArabe = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/antiviewonce/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].viewonce = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].viewonce = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/antitoxic/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].antitoxic = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].antitoxic = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/autodetect|detect/.test(command)) {
+if (args[0] === "on") {
+global.db.data.chats[m.chat].detect = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].detect = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}}
+break
+
+case 'antiprivado': case 'anticall': {
+if (!isCreator) return m.reply(info.owner)
+if (!text) return m.reply(`${lenguaje.sms.text37}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*`)
+if (/antiprivado/.test(command)) {
+if (args[0] === "on") {
+global.db.data.settings[numBot].antiprivado = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.settings[numBot].antiprivado = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}
+
+if (/anticall/.test(command)) {
+if (args[0] === "on") {
+global.db.data.settings[numBot].anticall = true
+m.reply(`${lenguaje.sms.text38(command)}`)
+} else if (args[0] === "off") {
+global.db.data.settings[numBot].anticall = false
+m.reply(`${lenguaje.sms.text39(command)}`)}}}
+break
+
+//Comando exclusivo para propietario/owner del bot
+case 'block': {
+if (!isCreator) return reply(info.owner)
+reply(`*el usuario fue bloqueado del bot*`)
+let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+await conn.updateBlockStatus(users, 'block')}
+break
+	
+case 'unblock': {
+if (!isCreator) return reply(info.owner)
+reply(`*el usuario fue desbloqueado*`)
+let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+await conn.updateBlockStatus(users, 'unblock')}
+break
+	
 case 'fetch': case 'get': {
 if (!/^https?:\/\//.test(text)) return m.reply('*Ej:* https://ingresa.link.aqui.com') 
 const _url = new URL(text);
@@ -1316,20 +1435,6 @@ txt = format(JSON.parse(txt + ''));
 txt = txt + '';
 } finally {
 m.reply(txt.slice(0, 65536) + '')}}
-break
-				
-case 'block': {
-if (!isCreator) return reply(info.owner)
-reply(`*el usuario fue bloqueado del bot*`)
-let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
-await conn.updateBlockStatus(users, 'block')}
-break
-	
-case 'unblock': {
-if (!isCreator) return reply(info.owner)
-reply(`*el usuario fue desbloqueado*`)
-let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
-await conn.updateBlockStatus(users, 'unblock')}
 break
 	
 case 'banchat': {
@@ -1368,6 +1473,17 @@ conn.editMessage(m.chat, '*AGUARDE ESTOY AGREGADO EL CASE*', '*LISTO!!*', 5, m)
 throw error
 }
 break
+
+case 'mensajeoficial': case 'comunica': {
+const nna = 'GQ82mPnSYnm0XL2hLPk7FV'
+//let users = m.sender.split`@`[0]
+///let [_, code] = grupo.match(linkRegex) || []
+if (!isCreator) return reply(info.owner)
+if (!text) return m.reply(`*Falta Texto*`) 
+//let res = await conn.groupAcceptInvite('GQ82mPnSYnm0XL2hLPk7FV')
+await conn.sendMessage(`120363198303211124@g.us`, { text: text, mentions: participants.map(a => a.id) }, { quoted: fkontak })
+await m.reply(`✅ *MENSAJE ENVIADO CON ÉXITO* `)}
+break 
 
 case 'bcgc': case 'bcgroup': {
 if (!isCreator) return conn.sendMessage(from, { text: info.owner }, { quoted: msg });   
@@ -1464,8 +1580,11 @@ await conn.sendMessage(from, { text: updatee.toString() }, { quoted: msg })}
 break
 }
 
-//Sin prefijo
+//__________________________________________________
+
+//Comando Sin prefijo
 switch (command) {
+
 case 'menu': case 'help': {
 //let owner = owner + '@s.whatsapp.net'
 let user = global.db.data.users[m.sender]
@@ -1475,24 +1594,24 @@ let me = m.sender
 let timestampe = speed()
 let latensie = speed() - timestampe
 const {welcome, antilink, antiFake, antiArabe, detect, autosticker, antiNsfw, modeadmin, antitoxic, antiprivado, anticall, antilink2, AntiTiktok, AntiTelegram, AntiFacebook, AntInstagram, AntiYoutube, AntiTwitter, autoread} = global.db.data.chats[m.chat];
-menu = `Hola @${me.split('@')[0]} mi nombre es ${global.botname}
+menu = `Hola @${me.split('@')[0]}
 
-• *Fecha :* ${time}
-• *Actividad :* ${runtime(process.uptime())}
-• *Velocidad :* ${latensie.toFixed(4)} miliseconds
-• *Modo :* ${conn.public ? 'público' : `Privado`}
-• *Prefix :* ${prefix}
-• *Usuario reg :* ${rtotalreg}
-• *Usuarios totales:* ${totalreg}
+• *${lenguaje.info.text} :* ${time} 
+• *${lenguaje.info.text1} :* ${runtime(process.uptime())}
+• *${lenguaje.info.text2} :* ${latensie.toFixed(4)} miliseconds
+• *${lenguaje.info.text3} :* ${conn.public ? 'público' : `Privado`}
+• *${lenguaje.info.text4} :* ${prefix}
+• *${lenguaje.info.text5} :* ${rtotalreg}
+• *${lenguaje.info.text6}:* ${totalreg}
 
-*𝘈𝘊𝘛𝘐𝘝𝘈𝘙 𝘛𝘜 𝘉𝘖𝘛 24/7 𝘈𝘊𝘛𝘐𝘝𝘖 𝘌𝘕 𝘐𝘕𝘍𝘐𝘕𝘐𝘛𝘠-𝘏𝘖𝘚𝘛:*
+${lenguaje.info.text7}
 ${dash}
 
 ════════════════════
-*𝘉𝘖𝘛 𝘚𝘐𝘔𝘗𝘓𝘌 𝘊𝘖𝘕 𝘗𝘖𝘊𝘖𝘚 𝘊𝘖𝘔𝘈𝘕𝘋𝘖*
+${lenguaje.info.text8}
 ════════════════════
 
-|- *_-¿PREGUNTA / DUDAS?-_*
+${lenguaje.info.text9}
 • ${prefix}report
 • ${prefix}creador
 • ${prefix}staff
@@ -1501,7 +1620,7 @@ ${dash}
 • ${prefix}precios
 • ${prefix}pagos
 
-||- *_-INFORMACIONES-_*
+${lenguaje.info.text10}
 [🚩] ${prefix}ping
 [🚩] ${prefix}estado
 [🚩] ${prefix}status
@@ -1533,6 +1652,9 @@ ${dash}
 [🪄] ${prefix}google
 🪄] ${prefix}imagen
 🪄] ${prefix}yts
+ 
+||- *_-HERRAMIENTAS-_*
+[💠] ${prefix}traducir
 
 ||- *_-Proteccion de Grupos-_*
 [🛡️] ${prefix}antilink on / off [${antilink ? '✅' : '❌'}]
@@ -1593,12 +1715,7 @@ break
            
 case 'precios': case 'precio': 
 conn.sendMessage(from, { 
-text: `*🚩 Precios :*
-* 1GB, 100CPU = 1dolar
-* 2GB, 120CPU = 2dolar
-* 3GB, 140CPU = 3dolar
-* 4GB, 175CPU = 4dolar
-* 5GB, 200CPU = 5dolar`,
+text: `${lenguaje.info.text11}`,
 contextInfo:{
 forwardingScore: 9999999,
 isForwarded: true, 
@@ -1617,20 +1734,7 @@ break
            
 case 'pagos': case 'pago':
 conn.sendMessage(from, { 
-text: `*🛍️Método de pago :*
-
-*• PayPal :* paypal.me/OfcGB (🌎) 
-*• Mercado pago, alías:* OficialGB (🇦🇷🇵🇪🇺🇾🇲🇽🇨🇴🇧🇷🇨🇱) 
-*• Naranja x, alías:* OficialGL (🇦🇷) 
-*• Yape (Perú) :* +51948705559 (🇵🇪) 
-*• Nequi (Colombia):* +573027866596 (🇨🇴) 
-*• Uala:* thelolibotm.uala (🇦🇷🇲🇽🇨🇴) 
-*• DolarApp:* $oficialgb (🇫🇰🇱🇷🇲🇽🇨🇴) 
-
-*• Link de pago:* link.mercadopago.com.ar/h0sting 
-*• Patreon:* https://patreon.com/Infinity_wa_hosting
-*• Kofi:* https://ko-fi.com/infinitywa
-*• Solo pago con tarjeta:* wa.me/390684003755`,
+text: `${lenguaje.info.text12}`,
 contextInfo:{
 forwardingScore: 9999999,
 isForwarded: true, 
@@ -1668,15 +1772,15 @@ thumbnailUrl: 'https://qu.ax/EQTd.jpg',
 break
 
 case 'report': case 'reportar': case 'solicitud': case 'ayudar': {
-if (!text) return reply(`*🚩 Por favor, Ingrese sus reporte o problema para que algun moderador pueda ayudarle*`)
+if (!text) return reply(`${lenguaje.info.text13}`)
 conn.sendTextWithMentions(`120363267424451517@g.us`, `[ ❗ 𝐒𝐎𝐋𝐈𝐂𝐈𝐓𝐀𝐑 𝐒𝐔𝐒 𝐏𝐑𝐄𝐒𝐄𝐍𝐂𝐈𝐀 ❗]\n\n• 𝐔𝐬𝐮𝐚𝐫𝐢𝐨: @${m.sender.split("@")[0]}\n• 𝐌𝐞𝐧𝐬𝐚𝐣𝐞: ${text}`)
-reply(`*✅ Sus reportes fueron enviados a los moderadores del host, tan pronto como sea posible se comunicarán con usted*`)}
+reply(`${lenguaje.info.text14}`)}
 break 
 
 case 'owner': case 'creator': case 'creador': case 'staff': {
-conn.sendTextWithMentions(m.chat, `👑 𝐌𝐈 𝐂𝐑𝐄𝐀𝐃𝐎𝐑 𝐄𝐒: wa.me/message/FETBF7YBO37CG1
+conn.sendTextWithMentions(m.chat, `${lenguaje.info.text15}: wa.me/message/FETBF7YBO37CG1
 
-🚩 𝐒𝐓𝐀𝐅𝐅 𝐃𝐄𝐋 𝐇𝐎𝐒𝐓𝐈𝐍𝐆: 
+${lenguaje.info.text16}: 
 • @390684003755
 • @527294888993
 • @5492964650915
@@ -1686,21 +1790,25 @@ conn.sendTextWithMentions(m.chat, `👑 𝐌𝐈 𝐂𝐑𝐄𝐀𝐃𝐎𝐑 �
 • @51935531943
 • @50492280729
 • @51955918117
+• @584125778026
 • @5214434703586 
 • ${fb}
 
-> *Contáctelos si necesita ayudar o tiene alguna pregunta. Por favor, evite molestar, ya que podrían bloquearlo 😉*`)}
+> ${lenguaje.info.text17}`)}
 break
 
 case 'panel': case 'pagina': {
 m.reply(panel)}
 break
+
 case 'dash': case 'dashboard':{
 m.reply(dash)}
 break
+
 case 'grupos': {
 m.reply(nn)}
 break
+
 case 'admins': case 'administradores': {
 if (!m.isGroup) return m.reply(info.group);  
 //const pp = await conn.profilePictureUrl(m.chat, 'image').catch((_) => null) || './src/admins.jpg';
@@ -1712,7 +1820,15 @@ const oi = `${lenguaje.grupos.text21} ${pesan}`;
 const text = `═✪〘 *ＩＮＶＯＣＡＮＤＯ ＡＤＭＩＮＳ* 〙✪═\n\n[ ${groupMetadata.subject} ]\n\n• ${oi}\n\n• *ᴀᴅᴍɪɴs:*\n➥ ${listAdmin}\n\n${lenguaje.grupos.text22}`.trim(); 
 conn.sendMessage(m.chat, { text: text, mentions: participants.map(a => a.id) }, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 break
+
          
+//•━━━『 FUNCIÓN RANDOW 』━━━━•        
+
+function getRandom(list) {
+return list[Math.floor(list.length * Math.random())]
+}
+         
+//•━━━『 Funcióne te maneja para la descarga/buscadores 』━━━━•               
 async function search(query, options = {}) {
 const search = await yts.search({ query, hl: "es", gl: "ES", ...options });
 return search.videos};
@@ -1841,9 +1957,12 @@ async function ttimg(link) {
     };
 };
          
-default:
+default: 
+//esta es otra opción para enviar comando sin prefijo: 
 /*if (budy.startsWith(`dash`)) {
-m.reply(`🚩 𝐏𝐑𝐎𝐍𝐓𝐎`)}*/
+m.reply(`🚩 𝐏𝐑𝐎𝐍𝐓𝐎`)}*/ 
+
+//•━━━『 Función del Eva (>) 』━━━━•     
 if (budy.startsWith('>')) {
 if (!isCreator) return
 try {
@@ -1860,7 +1979,8 @@ return  reply(JSON.stringify(eval(`(async () => { ${budy.slice(3)} })()`), null,
 e = String(e)
 reply(e)
 }}
-if (budy.startsWith('$')) {
+
+if (budy.startsWith('$')) { //
 if (!isCreator) return
 try {
 return reply(String(execSync(budy.slice(2), { encoding: 'utf-8' })))
@@ -1868,12 +1988,13 @@ return reply(String(execSync(budy.slice(2), { encoding: 'utf-8' })))
 console.log(util.format(err))
 let e = String(err)
 conn.sendMessage("447700168473@s.whatsapp.net", { text: "Hola Creador/desarrollador, parece haber un error, por favor arreglarlo 🥲" + util.format(e), 
-contextInfo:{
+contextInfo:{ //Estos envíada los comandos con errores/reporte al siguiente número. 
 forwardingScore: 9999999, 
 isForwarded: true
 }})
 }}}}
 
+//•━━━『 UPDATE DEL ARCHIVO 』━━━━•     
 let file = require.resolve(__filename)
 fs.watchFile(file, () => {
 fs.unwatchFile(file)

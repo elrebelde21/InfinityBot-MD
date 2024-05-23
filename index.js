@@ -29,7 +29,7 @@ const color = (text, color) => {
 return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(text) : chalk.keyword(color)(text)
 }
 
-//base de datos
+//----------------[ BASE DE DATOS ]--------------------
 var low
 try {
 low = require('lowdb')
@@ -70,9 +70,8 @@ loadDatabase() //@aidenlogin
 if (global.db) setInterval(async () => {
 if (global.db.data) await global.db.write()
 }, 30 * 1000)
-//_________________
 
-//tmp
+//--------------------[ ARCHIVO TMP ]-----------------------
 function clearTmp() {
 const tmp = [tmpdir(), join(__dirname, './tmp')];
 const filename = [];
@@ -94,12 +93,9 @@ if (opts['autocleartmp'] && (global.support || {}).find) (tmp = [os.tmpdir(), 't
 }}
 setInterval(async () => {
 await clearTmp()
-console.log(`╔═════════════════════════════════╗
-║ 🟢 𝐒𝐄 𝐋𝐈𝐌𝐏𝐈𝐎 𝐋𝐀 𝐂𝐀𝐑𝐏𝐄𝐓𝐀 𝐓𝐌𝐏 𝐂𝐎𝐍 𝐄́𝐗𝐈𝐓𝐎║
-╚═════════════════════════════════╝`)}, 180000)
-//_________________
+console.log(chalk.cyanBright(lenguaje['tmp']()))}, 180000)
 
-//configuración 
+//--------------------[ CONFIGURACIÓN ]-----------------------
 const methodCodeQR = process.argv.includes("qr")
 const pairingCode = !!phoneNumber || process.argv.includes("--pairing-code")
 const methodCode = !!phoneNumber || process.argv.includes("code")
@@ -120,25 +116,25 @@ do {
 let lineM = '┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅'
 opcion = await question(`┏${lineM}  
 ┋ ${chalk.blueBright('┏┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}
-┋ ${chalk.blueBright('┋')} ${chalk.blue.bgBlue.bold.cyan('MÉTODO DE VINCULACIÓN')}
+┋ ${chalk.blueBright('┋')} ${chalk.blue.bgBlue.bold.cyan(lenguaje.console.text1)}
 ┋ ${chalk.blueBright('┗┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}   
 ┋ ${chalk.blueBright('┏┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}     
-┋ ${chalk.blueBright('┋')} ${chalk.green.bgMagenta.bold.yellow('¿CÓMO DESEA CONECTARSE?')}
-┋ ${chalk.blueBright('┋')} ${chalk.bold.redBright('⇢  Opción 1:')} ${chalk.greenBright('Código QR.')}
-┋ ${chalk.blueBright('┋')} ${chalk.bold.redBright('⇢  Opción 2:')} ${chalk.greenBright('Código de 8 digitos.')}
+┋ ${chalk.blueBright('┋')} ${chalk.green.bgMagenta.bold.yellow(lenguaje.console.text2)}
+┋ ${chalk.blueBright('┋')} ${chalk.bold.redBright(lenguaje.console.text3)} ${chalk.greenBright(lenguaje.console.text4)}
+┋ ${chalk.blueBright('┋')} ${chalk.bold.redBright(lenguaje.console.text5)} ${chalk.greenBright(lenguaje.console.text6)}
 ┋ ${chalk.blueBright('┗┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}
 ┋ ${chalk.blueBright('┏┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}     
-┋ ${chalk.blueBright('┋')} ${chalk.italic.magenta('Escriba sólo el número de')}
-┋ ${chalk.blueBright('┋')} ${chalk.italic.magenta('la opción para conectarse.')}
+┋ ${chalk.blueBright('┋')} ${chalk.italic.magenta(lenguaje.console.text7)}
+┋ ${chalk.blueBright('┋')} ${chalk.italic.magenta(lenguaje.console.text8)}
 ┋ ${chalk.blueBright('┗┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}
 ┗${lineM}\n${chalk.bold.magentaBright('---> ')}`)
 if (!/^[1-2]$/.test(opcion)) {
-console.log(chalk.bold.redBright(`NO SE PERMITE NÚMEROS QUE NO SEAN ${chalk.bold.greenBright("1")} O ${chalk.bold.greenBright("2")}, TAMPOCO LETRAS O SÍMBOLOS ESPECIALES.\n${chalk.bold.yellowBright("CONSEJO: COPIE EL NÚMERO DE LA OPCIÓN Y PÉGUELO EN LA CONSOLA.")}`))
+console.log(chalk.bold.redBright(`${lenguaje.console.text9(chalk)}`))
 }} while (opcion !== '1' && opcion !== '2' || fs.existsSync(`./sessions/creds.json`))
 }
     
+//--------------------[ CONEXIÓNES ]-----------------------   
 async function startBot() {
-
 console.info = () => {}
 const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }), })
 const msgRetry = (MessageRetryMap) => { }
@@ -150,7 +146,8 @@ printQRInTerminal: opcion == '1' ? true : methodCodeQR ? true : false,
 logger: pino({ level: 'silent' }),
 auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({level: 'silent'})) },
 mobile: MethodMobile, 
-browser: opcion == '1' ? ['InfinityBot-MD', 'Safari', '1.0.0'] : methodCodeQR ? ['InfinityBot-MD', 'Safari', '1.0.0'] : ["Ubuntu", "Chrome", "20.0.04"],
+browser: opcion == '1' ? ['InfinityBot-MD', 'Safari', '1.0.0'] : methodCodeQR ? ['InfinityBot-MD', 'Safari', '1.0.0'] : ["Ubuntu", "Chrome", "20.0.04"], //puede cambia el nombre "InfinityBot-MD" por el nombre del tu bot
+//pd: no cambie la parte de ["Ubuntu", "Chrome", "20.0.04"] dejarlo asi como esta para evitar errores. 
 msgRetry,
 msgRetryCache,
 version,
@@ -173,17 +170,17 @@ let addNumber
 if (!!phoneNumber) {
 addNumber = phoneNumber.replace(/[^0-9]/g, '')
 if (!Object.keys(PHONENUMBER_MCC).some(v => addNumber.startsWith(v))) {
-console.log(chalk.bgBlack(chalk.bold.redBright("🟢 Comience con el código de país de su número de WhatsApp, ejemplo: +59178862672"))) 
+console.log(chalk.bgBlack(chalk.bold.redBright(lenguaje.console.text10))) 
 process.exit(0)
 }} else {
 while (true) {
-addNumber = await question(chalk.bgBlack(chalk.bold.greenBright(`🟢 Ingresa el número que sera bot\nPor ejemplo: +59178862672 `)))
+addNumber = await question(chalk.bgBlack(chalk.bold.greenBright(lenguaje.console.text11)))
 addNumber = addNumber.replace(/[^0-9]/g, '')
   
 if (addNumber.match(/^\d+$/) && Object.keys(PHONENUMBER_MCC).some(v => addNumber.startsWith(v))) {
 break 
 } else {
-console.log(chalk.bold.redBright("❌ Asegúrese de agregar el código de país."))
+console.log(chalk.bold.redBright(lenguaje.console.text12))
 }}
 rl.close()  
 }
@@ -191,7 +188,7 @@ rl.close()
 setTimeout(async () => {
 let codeBot = await sock.requestPairingCode(addNumber)
 codeBot = codeBot?.match(/.{1,4}/g)?.join("-") || codeBot
-console.log(chalk.bold.white(chalk.bgMagenta(`👑 CÓDIGO DE VINCULACIÓN 👑: `)), chalk.bold.white(chalk.white(codeBot)))
+console.log(chalk.bold.white(chalk.bgMagenta(lenguaje.console.text13)), chalk.bold.white(chalk.white(codeBot)))
 }, 2000)
 }}
 }
@@ -204,6 +201,8 @@ return msg.message
 conversation: 'SimpleBot',
 }}
 
+//--------------------[ FUNCIÓN  ]-----------------------
+//NO TOCAR, Si no sabes los que esta haciendo :v
 sock.ev.on('messages.upsert', async chatUpdate => {
 //console.log(JSON.stringify(chatUpdate, undefined, 2))
 try {
@@ -239,7 +238,7 @@ var prefCmd = prefix+toCmd
 sock.appenTextMessage(prefCmd, chatUpdate)
 }}}})
 
-//anticall
+//--------------------[ ANTICALL ]-----------------------
 sock.ev.on('call', async (fuckedcall) => { 
 sock.user.jid = sock.user.id.split(":")[0] + "@s.whatsapp.net" // jid in user?
 let anticall = global.db.data.settings[numBot].anticall
@@ -249,13 +248,14 @@ for (let fucker of fuckedcall) {
 if (fucker.isGroup == false) {
 if (fucker.status == "offer") {
 let call = await sock.sendTextWithMentions(fucker.from, `*[ ! ] @${fucker.from.split('@')[0]} ${lenguaje['smscall']()} ${fucker.isVideo ? `videollamadas` : `llamadas` }_\n\n${lenguaje['smscall2']()}\n\n• ${fb}`)
-let vcard = `BEGIN:VCARD\nVERSION:3.0\nN:;Propietario 👑;;;\nFN:Propietario\nORG:Propietario 👑\nTITLE:\nitem1.TEL;waid=447700168473:+44 7700 168473\nitem1.X-ABLabel:Propietario 👑\nX-WA-BIZ-DESCRIPTION:ᴇsᴄʀɪʙɪ sᴏʟᴏ ᴘᴏʀ ᴄᴏsᴀs ᴅᴇʟ ʙᴏᴛ.\nX-WA-BIZ-NAME:Owner 👑\nEND:VCARD`
-sock.sendMessage(fucker.from, { contacts: { displayName: 'ɴᴏᴠᴀʙᴏᴛ-ᴍᴅ 👑', contacts: [{ vcard }] }}, {quoted: call, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+let vcard = `BEGIN:VCARD\nVERSION:3.0\nN:;Propietario 👑;;;\nFN:Propietario\nORG:Propietario 👑\nTITLE:\nitem1.TEL;waid=447700168473:+44 7700 168473\nitem1.X-ABLabel:Propietario 👑\nX-WA-BIZ-DESCRIPTION:ᴇsᴄʀɪʙɪ sᴏʟᴏ ᴘᴏʀ ᴄᴏsᴀs ᴅᴇʟ ʙᴏᴛ.\nX-WA-BIZ-NAME:Owner 👑\nEND:VCARD`//puede cambiar el numero "+44 7700 168473" por el tuyo ponlo como este ejemplo
+sock.sendMessage(fucker.from, { contacts: { displayName: 'PROPIETARIO 👑', contacts: [{ vcard }] }}, {quoted: call, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 await sleep(8000)
 await sock.updateBlockStatus(fucker.from, "block")
 }}}})
 
-//detect
+//--------------------[ DETECT ]-----------------------
+//notificación | avisos del Grupo 
 sock.ev.on("groups.update", async (json) => {
 console.log(color(json, '#009FFF'))
 //console.log(json)
@@ -270,25 +270,7 @@ ppgroup = await sock.profilePictureUrl(anu.id, 'image')
 ppgroup = 'https://i.ibb.co/RBx5SQC/avatar-group-large-v2.png?q=60'
 }
 //let text = ``
-sock.sendMessage(res.id, {text: lenguaje['smsAvisos2'](),  
-contextInfo:{  
-forwardedNewsletterMessageInfo: { 
-newsletterJid: '120363160031023229@newsletter', 
-serverMessageId: '', 
-newsletterName: 'INFINITY-WA 💫' }, 
-forwardingScore: 9999999,  
-isForwarded: true,   
-mentionedJid:[m.sender],  
-"externalAdReply": {  
-"showAdAttribution": true,  
-"containsAutoReply": false,
-"renderLargerThumbnail": false,  
-"title": lenguaje['smsAvisos'](), 
-"mediaType": 1,  
-"thumbnail": imagen1,  
-"mediaUrl": md,  
-"sourceUrl": md
-}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+sock.sendMessage(res.id, { text: lenguaje['smsAvisos2'](), mentionedJid:[m.sender]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 } else if (res.announce == false) {
 await sleep(2000)
 try {
@@ -297,26 +279,7 @@ ppgroup = await sock.profilePictureUrl(anu.id, 'image')
 ppgroup = 'https://i.ibb.co/RBx5SQC/avatar-group-large-v2.png?q=60'
 }
 //let text = `「 𝐀𝐉𝐔𝐒𝐓𝐄𝐒 𝐃𝐄𝐋 𝐆𝐑𝐔𝐏𝐎 」\n\n*ᴬʰᵒʳᵃ ᵗᵒᵈᵒˢ ˡᵒˢ ᵖᵃʳᵗᶦᶜᶦᵖᵃⁿᵗᵉˢ ᵖᵘᵉᵈᵉⁿ ᵐᵃⁿᵈᵃʳ ᵐᵉⁿˢᵃʲᵉˢ 🗣️*`
-sock.sendMessage(res.id, {   
-text: lenguaje['smsAvisos4'](),  
-contextInfo:{  
-forwardedNewsletterMessageInfo: { 
-newsletterJid: '120363160031023229@newsletter', 
-serverMessageId: '', 
-newsletterName: 'INFINITY-WA 💫' }, 
-forwardingScore: 9999999,  
-isForwarded: true,    
-mentionedJid:[m.sender],  
-"externalAdReply": {  
-"showAdAttribution": true,  
-"containsAutoReply": false,
-"renderLargerThumbnail": false,  
-"title": lenguaje['smsAvisos3'](),   
-"mediaType": 1,   
-"thumbnail": imagen1, 
-"mediaUrl": md, 
-"sourceUrl": md  
-}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+sock.sendMessage(res.id, { text: lenguaje['smsAvisos4'](), mentionedJid:[m.sender]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 } else if (res.restrict == true) {
 await sleep(2000)
 try {
@@ -325,26 +288,7 @@ ppgroup = await sock.profilePictureUrl(anu.id, 'image')
 ppgroup = 'https://i.ibb.co/RBx5SQC/avatar-group-large-v2.png?q=60'
 }
 //let text = `「 𝐀𝐉𝐔𝐒𝐓𝐄𝐒 𝐃𝐄𝐋 𝐆𝐑𝐔𝐏𝐎 」\n\n*ᴬʰᵒʳᵃ ˢᵒˡᵒ ˡᵒˢ ᵃᵈᵐᶦⁿˢ ᵖᵘᵉᵈᵉ ᵉᵈᶦᵗᵃʳ ˡᵒˢ ᵃʲᵘˢᵗᵉ ᵈᵉˡ ᵍʳᵘᵖᵒ*`
-sock.sendMessage(res.id, {text: lenguaje['smsAvisos6'](),
-contextInfo:{ 
-forwardedNewsletterMessageInfo: { 
-newsletterJid: '120363160031023229@newsletter', 
-serverMessageId: '', 
-newsletterName: 'INFINITY-WA 💫' }, 
-forwardingScore: 9999999,  
-isForwarded: true,   
-mentionedJid:[m.sender],  
-"externalAdReply": {  
-"showAdAttribution": true,  
-"containsAutoReply": false,
-"renderLargerThumbnail": false,  
-"title": lenguaje['smsAvisos5'](),
-"body": wm, 
-"mediaType": 1,   
-"thumbnail": imagen1, 
-"mediaUrl": md, 
-"sourceUrl": yt
-}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+sock.sendMessage(res.id, { text: lenguaje['smsAvisos6'](), mentionedJid:[m.sender]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 } else if (res.restrict == false) {
 await sleep(2000)
 try {
@@ -353,26 +297,7 @@ ppgroup = await sock.profilePictureUrl(anu.id, 'image')
 ppgroup = 'https://i.ibb.co/RBx5SQC/avatar-group-large-v2.png?q=60'
 }
 //let text = `「 𝐀𝐉𝐔𝐒𝐓𝐄𝐒 𝐃𝐄𝐋 𝐆𝐑𝐔𝐏𝐎 」\n\n*ᴬʰᵒʳᵃ ᵗᵒᵈᵒˢ ˡᵒˢ ᵖᵃʳᵗᶦᶜᶦᵖᵃʳᵗᵉ ᵖᵘᵉᵈᵉ ᵉᵈᶦᵗᵃʳ ˡᵒˢ ᵃʲᵘˢᵗᵉ ᵈᵉˡ ᵍʳᵘᵖᵒ*`
-sock.sendMessage(res.id, {text: lenguaje['smsAvisos7'](),  
-contextInfo:{  
-forwardedNewsletterMessageInfo: { 
-newsletterJid: '120363160031023229@newsletter', 
-serverMessageId: '', 
-newsletterName: 'INFINITY-WA 💫' }, 
-forwardingScore: 9999999,  
-isForwarded: true,   
-mentionedJid:[m.sender],  
-"externalAdReply": {  
-"showAdAttribution": true,  
-"containsAutoReply": false,
-"renderLargerThumbnail": false,  
-"title": lenguaje['smsAvisos5'](),
-"body": wm, 
-"mediaType": 1,   
-"thumbnail": imagen1, 
-"mediaUrl": md, 
-"sourceUrl": md
-}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+sock.sendMessage(res.id, { text: lenguaje['smsAvisos7'](), mentionedJid:[m.sender]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 } else if(!res.desc == ''){
 await sleep(2000)
 try {
@@ -381,26 +306,7 @@ ppgroup = await sock.profilePictureUrl(anu.id, 'image')
 ppgroup = 'https://i.ibb.co/RBx5SQC/avatar-group-large-v2.png?q=60'
 }
 let text = `${lenguaje['smsAvisos8']()}\n${res.desc}`
-sock.sendMessage(res.id, {text: text,  
-contextInfo:{  
-forwardedNewsletterMessageInfo: { 
-newsletterJid: '120363160031023229@newsletter', 
-serverMessageId: '', 
-newsletterName: 'INFINITY-WA 💫' }, 
-forwardingScore: 9999999,  
-isForwarded: true,   
-mentionedJid:[m.sender],  
-"externalAdReply": {  
-"showAdAttribution": true,  
-"containsAutoReply": false,
-"renderLargerThumbnail": false,  
-"title": lenguaje['smsAvisos5'](),
-"body": wm, 
-"mediaType": 1,   
-"thumbnail": imagen1, 
-"mediaUrl": md,  
-"sourceUrl": md
-}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+sock.sendMessage(res.id, { text: text, mentionedJid:[m.sender]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 } else {
 await sleep(2000)
 try {
@@ -409,29 +315,10 @@ ppgroup = await sock.profilePictureUrl(anu.id, 'image')
 ppgroup = 'https://i.ibb.co/RBx5SQC/avatar-group-large-v2.png?q=60'
 }
 let text = `${lenguaje['smsAvisos9']()}\n${res.subject}`
-sock.sendMessage(res.id, {text: text,  
-contextInfo:{  
-forwardedNewsletterMessageInfo: { 
-newsletterJid: '120363160031023229@newsletter', 
-serverMessageId: '', 
-newsletterName: 'INFINITY-WA 💫' }, 
-forwardingScore: 9999999,  
-isForwarded: true,   
-mentionedJid:[m.sender],  
-"externalAdReply": {  
-"showAdAttribution": true,  
-"containsAutoReply": false,
-"renderLargerThumbnail": false,  
-"title": lenguaje['smsAvisos5'](),
-"body": wm, 
-"mediaType": 1,   
-"thumbnail": imagen1, 
-"mediaUrl": md,  
-"sourceUrl": md
-}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+sock.sendMessage(res.id, { text: text, mentionedJid:[m.sender]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 }})
 
-//Welcome adaptado
+//--------------------[ WELCOME ]-----------------------
 sock.ev.on('group-participants.update', async (anu) => {
 console.log(anu)
 //let Welc = global.db.data.chats[anu.id].welcome
@@ -459,33 +346,8 @@ const time = moment.tz('America/Bogota').format('HH:mm:ss')
 const date = moment.tz('America/Bogota').format('DD/MM/YYYY')
 let name = num
 const miembros = metadata.participants.length
-sock.sendMessage(anu.id, { text: `${pickRandom([`${metadata.subject}\n\nBienvenido @${name.split("@")[0]}
+sock.sendMessage(anu.id, { text: `${lenguaje['smsWel2']()} @${name.split("@")[0]} 👋`, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})//`
 
-_*💢Te ofrecemos un hosting de calidad, a un precio accesible, barato, todos pueden comprarlo*_
-
-*🚩 Consultas precios usar el siguiente comando:*
-#precios
-
-*🛍️ ¿Cuales son los metodos de pago? :*
-#pagos
-
-*❇️Contactar con staff usando el siguiente comando :*
-#solicitud (Pronto alguien de staff se comunidad rápido con usted) 
-#staff`, `🔥🌟 ¡𝐈𝐧𝐟𝐢𝐧𝐢𝐭𝐲-𝐖𝐚 𝑯𝒐𝒔𝒕𝒊𝒏𝒈! 🌟🔥
-
-¡Bienvenido @${name.split("@")[0]}!
-
-_*💥 Descubre nuestro hosting de calidad a un precio increíblemente accesible para todos!*_
-
-*🚀 ¿Quieres conocer nuestros precios? Utiliza el siguiente comando:*
-#precios
-
-*💳 ¿Cuáles son nuestros métodos de pago? :*
-#pagos
-
-*✨ ¡Contáctanos con el siguiente comando y nuestro equipo te atenderá rápidamente! :*
-#solicitud (¡Pronto un miembro de nuestro equipo se pondrá en contacto contigo!)
-#staff`])}`, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})//`
 } else if (anu.action == 'remove') {
 const buffer = await getBuffer(ppuser)
 let name = num
@@ -493,6 +355,8 @@ const members = metadata.participants.length
 //let byegc = fs.readFileSync('./src/byegc.webp')
 let byegc = 'https://qu.ax/WUEu.webp'
 sock.sendFile(anu.id, byegc, 'sticker.webp', '', null, true, { contextInfo: { 'forwardingScore': 200, 'isForwarded': false, externalAdReply:{ showAdAttribution: false, title: '乂 ＡＤＩＯ́Ｓ 乂', body: `${name.split("@")[0]}`, mediaType: 2, sourceUrl: `${pickRandom([md, yt])}`, thumbnail: leave}}})
+
+//--------------------[ DETECTO ADMINS ]-----------------------
 } else if (anu.action == 'promote') {
 //let users = participants.map(u => sock.decodeJid(u.id))
 const groupAdmins = participants.filter(p => p.admin)
@@ -500,44 +364,13 @@ const listAdmin = groupAdmins.map((v, i) => `*» ${i + 1}. @${v.id.split('@')[0]
 const buffer = await getBuffer(ppuser)
 let name = num
 let usuario = anu.author
-sock.sendMessage(anu.id, { text: `𝐇𝐞𝐲 @${name.split("@")[0]} 𝐅𝐞𝐥𝐢𝐜𝐢𝐝𝐚𝐝𝐞𝐬 🎉 𝐀𝐡𝐨𝐫𝐚 𝐞𝐫𝐞𝐬 𝐚𝐝𝐦𝐢𝐧𝐬 𝐝𝐞𝐥 𝐆𝐫𝐮𝐩𝐨\n\n> 🫵 Acción echa por : @${usuario.split("@")[0]}`, mentions: [...groupAdmins.map(v => v.id)], 
- contextInfo:{
- forwardedNewsletterMessageInfo: { 
-newsletterJid: '120363160031023229@newsletter', 
-serverMessageId: '', 
-newsletterName: 'INFINITY-WA 💫' }, 
-forwardingScore: 9999999,
-isForwarded: true, 
- mentionedJid: [num, usuario],
- "externalAdReply": {"showAdAttribution": true,
- "containsAutoReply": true,
- "title": `乂 ＮＵＥＶＯ ＡＤＭＩＮ 乂`,
-"body": botname,
- "previewType": "PHOTO",
-"thumbnailUrl": ``,
-"thumbnail": welc,
-"sourceUrl": `${pickRandom([nna, md, yt])}`}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+sock.sendMessage(anu.id, { text: `@${name.split("@")[0]} ${lenguaje['promote']()} @${usuario.split("@")[0]}`, mentions: [...groupAdmins.map(v => v.id)]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+
 } else if (anu.action == 'demote') {
 const buffer = await getBuffer(ppuser)
 let name = num
 let usuario = anu.author
-sock.sendMessage(anu.id, { text: `@${name.split("@")[0]} 𝐃𝐄𝐉𝐀𝐑𝐓𝐄 𝐃𝐄 𝐒𝐄𝐑 𝐀𝐃𝐌𝐈𝐍𝐒 𝐃𝐄𝐋 𝐆𝐑𝐔𝐏𝐎\n\n> 🫵 Acción echa por : @${usuario.split("@")[0]}`,
- contextInfo:{
- forwardedNewsletterMessageInfo: { 
-newsletterJid: '120363160031023229@newsletter', 
-serverMessageId: '', 
-newsletterName: 'INFINITY-WA 💫' }, 
-forwardingScore: 9999999,
-isForwarded: true, 
- mentionedJid:[num, usuario],
- "externalAdReply": {"showAdAttribution": true,
- "containsAutoReply": true,
- "title": `乂 ＵＮ ＡＤＭＩＮ ＭＥＮＯＳ  乂`,
-"body": botname, 
- "previewType": "PHOTO",
-"thumbnailUrl": ``,
-"thumbnail": leave,
-"sourceUrl": `${pickRandom([nna, md, yt])}`}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+sock.sendMessage(anu.id, { text: `@${name.split("@")[0]} 𝐃${lenguaje['demote']()} @${usuario.split("@")[0]}`, mentionedJid:[num, usuario]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 }}} catch (err) {
 console.log(err)
 }})
@@ -557,24 +390,20 @@ console.log(chalk.gray('iniciando | starting...'));
 } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
 console.log(color('[SYS]', '#009FFF'),
 color(moment().format('DD/MM/YY HH:mm:ss'), '#A1FFCE'),
-color(`\n╔════════════════════╗
-║ ⚠️ 𝘊𝘖𝘕𝘌𝘟𝘐𝘖𝘕 𝘊𝘌𝘙𝘙𝘈𝘋𝘈...   ║
-╚════════════════════╝\n`, '#f64f59'));
+color(`${lenguaje['smsConexioncerrar']()}`, '#f64f59'));
 startBot()
 } else if (opcion == '1' || methodCodeQR && qr !== undefined) {
 if (opcion == '1' || methodCodeQR) {
 console.log(color('[SYS]', '#009FFF'),
 color(moment().format('DD/MM/YY HH:mm:ss'), '#A1FFCE'),
-color(`\n🚩 𝘌𝘚𝘊𝘈𝘕𝘌𝘈 𝘌𝘓 𝘘𝘙, 𝘌𝘟𝘗𝘐𝘙𝘈 𝘌𝘓 45 𝘚𝘌𝘎`, '#f12711'))
+color(`\n╭━─━─━─≪ ${vs} ≫─━─━─━╮\n│${lenguaje['smsEscaneaQR']()}\n╰━─━━─━─≪ 🟢 ≫─━─━━─━╯`, '#f12711'))
 }
 } else if (connection == 'open') {
 console.log(color(` `,'magenta'))
-console.log(color(`\n𝘜𝘚𝘜𝘈𝘙𝘐𝘖 𝘊𝘖𝘕𝘌𝘊𝘛𝘈𝘕𝘋𝘖 :` + JSON.stringify(sock.user, null, 2), 'yellow'))
+console.log(color(`\n${lenguaje['smsConexion']()} ` + JSON.stringify(sock.user, null, 2), 'yellow'))
 console.log(color('[SYS]', '#009FFF'),
 color(moment().format('DD/MM/YY HH:mm:ss'), '#A1FFCE'),
-color(`\n╔══════════════════════╗
-║ 🟢 CONECTANDO CON ÉXITO   ║
-╚══════════════════════╝\n` + receivedPendingNotifications, '#38ef7d')
+color(`\n╭━─━─━─≪ ${vs} ≫─━─━─━╮\n│${lenguaje['smsConectado']()}\n╰━─━━─━─≪ 🟢 ≫─━─━━─━╯` + receivedPendingNotifications, '#38ef7d')
 );
 }});
 
