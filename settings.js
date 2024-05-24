@@ -105,14 +105,17 @@ waitt: '████▒▒▒▒▒▒30%',
 waittt: '█████▒▒▒▒▒50%', 
 waitttt: '████████▒▒80%', 
 waittttt: '██████████100%', 
-admin: `[❗] Este comando solo puede ser utilizado por administradores del grupo`, 
-botAdmin: `[❗] Este comando solo se puede usar cuando el bot se convierte en administrador`, 
-owner: `[❗] Este comando solo es para mi propietario`, 
-group: `[❗] Este comando es solo para grupos`, 
-private: `[❗] Este comando solo funciona al private del bot`, 
-bot: `[❗] Este comando solo lo usa por el Bot`, 
-error: `[❗] Error`, 
-registra: `「NO ESTAS REGISTRADO」\n\nPA NO APARECES EN MI BASE DE DATOS ✋🥸🤚\n\nPara poder usarme escribe el siguente comando\n\nComando: ${prefix}reg Nombre.edad`, }
+result: `${lenguaje['exito']()}`,  
+admin: `${lenguaje['admin']()}`, 
+botAdmin: `${lenguaje['botAdmin']()}`, 
+owner: `${lenguaje['propietario']()}`, 
+group: `${lenguaje['group']()}`, 
+private: `${lenguaje['private']()}`, 
+bot: `${lenguaje['bot']()}`, 
+error: `${lenguaje['error']()}`, 
+registra: `${lenguaje['registra']()}`, 
+limit: `${lenguaje['limit']()}`, 
+endLimit: `${lenguaje['endLimit']()}`, }
 
 let file = require.resolve(__filename) // Obtener la ruta completa del archivo 
 fs.watchFile(file, () => { // Observar cambios en el archivo
