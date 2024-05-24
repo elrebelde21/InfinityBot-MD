@@ -1008,20 +1008,20 @@ m.reply('5 ' + info.limit)
 }
 break   
 
-case 'git': case 'gitclone':
+case 'git': case 'gitclone': {
 if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 if (!args[0]) return reply(`*${lenguaje.sms.text}*\n${prefix + command} ${md}`)
 if (!isUrl(args[0]) && !args[0].includes('github.com')) return reply(`Link invalido!!`)
-m.react("🕕") 
+m.react('🕕') 
 let regex1 = /(?:https|git)(?::\/\/|@)github\.com[\/:]([^\/:]+)\/(.+)/i
 let [, user, repo] = args[0].match(regex1) || []
 repo = repo.replace(/.git$/, '')
 let url = `https://api.github.com/repos/${user}/${repo}/zipball`
 let filename = (await fetch(url, {method: 'HEAD'})).headers.get('content-disposition').match(/attachment; filename=(.*)/)[1]
-conn.sendMessage(m.chat, { document: { url: url }, fileName: filename+'.zip', mimetype: 'application/zip' }, { quoted: m }).catch((err) => reply(info.error)
+conn.sendMessage(m.chat, { document: { url: url }, fileName: filename+'.zip', mimetype: 'application/zip' }, { quoted: m }) //.catch((err) => reply(info.error)
 db.data.users[m.sender].limit -= 10
 m.reply('10 ' + info.limit)
-m.react("✅") 
+m.react('✅')}
 break
 
 case 'tiktok': {
