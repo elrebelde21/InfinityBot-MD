@@ -4,7 +4,7 @@ const chalk = require('chalk')
 const { en, es, ar, id, pt, rs} = require('./libs/idiomas/total-idiomas.js') 
 
 //Numero que sera el propietario/owner del bot
-global.owner = [["447700168473", "𝐎𝐖𝐍𝐄𝐑", true],
+global.owner = [["573147616444", "𝐎𝐖𝐍𝐄𝐑", true],
 ["593968585383"], 
 ["5492266466080"],
 ["390684003755"], 
